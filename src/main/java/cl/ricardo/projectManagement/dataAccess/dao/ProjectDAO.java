@@ -15,7 +15,7 @@ public interface ProjectDAO extends DAO<Project, Integer> {
     public void delete(int id);
 
     @Override
-    public List<Project> getAll(String table);
+    public List<Project> getAll();
 
     @Override
     public Project getElement(int id);
