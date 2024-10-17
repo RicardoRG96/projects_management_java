@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
+import javax.swing.JOptionPane;
 
 public class Register extends javax.swing.JFrame {
     
@@ -19,13 +20,14 @@ public class Register extends javax.swing.JFrame {
     public Register(DAOManager manager, User user) {
         this.manager = manager;
         this.user = user;
+        initComponents();
     }
     
     public Register() {
         initComponents();
     }
     
-    public void registerUser(User user) {
+    public void registerUser() {
         UserDAO userDao = manager.getUserDAO();
         
         String userNameInput = txtUserNameRegister.getText();
@@ -118,7 +120,7 @@ public class Register extends javax.swing.JFrame {
 
         txtUserNameRegister.setBackground(new java.awt.Color(245, 237, 237));
         txtUserNameRegister.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        txtUserNameRegister.setForeground(new java.awt.Color(204, 204, 204));
+        txtUserNameRegister.setForeground(new java.awt.Color(51, 51, 51));
         txtUserNameRegister.setBorder(null);
         txtUserNameRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -166,7 +168,7 @@ public class Register extends javax.swing.JFrame {
 
         txtEmailRegister.setBackground(new java.awt.Color(245, 237, 237));
         txtEmailRegister.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        txtEmailRegister.setForeground(new java.awt.Color(204, 204, 204));
+        txtEmailRegister.setForeground(new java.awt.Color(51, 51, 51));
         txtEmailRegister.setBorder(null);
         txtEmailRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -176,8 +178,8 @@ public class Register extends javax.swing.JFrame {
 
         txtPasswordRegister.setBackground(new java.awt.Color(245, 237, 237));
         txtPasswordRegister.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        txtPasswordRegister.setForeground(new java.awt.Color(204, 204, 204));
-        txtPasswordRegister.setText("jPasswordField1");
+        txtPasswordRegister.setForeground(new java.awt.Color(51, 51, 51));
+        txtPasswordRegister.setBorder(null);
         txtPasswordRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPasswordRegisterActionPerformed(evt);
@@ -276,10 +278,14 @@ public class Register extends javax.swing.JFrame {
 
     private void btnRegisterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegisterMouseClicked
         if (!"".equals(txtUserNameRegister.getText()) ||
-            !"".equals(txtEmailRegister.getText()) ||
-            !"".equals(txtPasswordRegister.getPassword())
+            !"".equals(txtEmailRegister.getText()) || 
+            cbxRole.getSelectedItem() != null
         ) {
-            
+            int question = JOptionPane.showConfirmDialog(null, "¿Está seguro que los datos son correctos?");
+            if (question == 0) {
+                registerUser();
+                JOptionPane.showMessageDialog(null, "Usuario registrado con éxito");
+            }
         }
     }//GEN-LAST:event_btnRegisterMouseClicked
 

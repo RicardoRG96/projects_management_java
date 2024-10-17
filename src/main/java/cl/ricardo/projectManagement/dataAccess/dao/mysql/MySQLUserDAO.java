@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MySQLUserDAO implements UserDAO {
     
@@ -18,6 +20,7 @@ public class MySQLUserDAO implements UserDAO {
     final String DELETE = "DELETE FROM users WHERE id = ?";
     final String GETALL = "SELECT * FROM users";
     final String GETONE = "SELECT * FROM users WHERE id = ?";
+    final String GETONE_BY_USERNAME_OR_EMAIL = "SELECT * FROM users WHERE username = ? OR email = ?";
     
     private Connection conn;
     
@@ -149,6 +152,42 @@ public class MySQLUserDAO implements UserDAO {
         try {
             statement = conn.prepareStatement(GETONE);
             statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                user = convert(resultSet);
+            } else {
+                throw new DAOException("No se ha encontrado el registro");
+            }
+        } catch (SQLException ex) {
+            throw new DAOException("Error en SQL", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+        }
+        return user;
+    }
+    
+    @Override
+    public User getUserByEmailOrUserName(String userInfo) throws DAOException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        User user = null;
+        try {
+            statement = conn.prepareStatement(GETONE_BY_USERNAME_OR_EMAIL);
+            statement.setString(1, userInfo);
+            statement.setString(2, userInfo);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 user = convert(resultSet);
