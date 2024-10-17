@@ -6,10 +6,10 @@ import java.util.List;
 public interface UserDAO extends DAO<User, Integer> {
     
     @Override
-    public void insert(User item) throws DAOException;
+    public void insert(User user) throws DAOException;
 
     @Override
-    public void update(User item) throws DAOException;
+    public void update(User user) throws DAOException;
 
     @Override
     public void delete(int id) throws DAOException;

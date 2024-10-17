@@ -1,5 +1,6 @@
 package cl.ricardo.projectManagement.dataAccess;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class Project {
@@ -8,17 +9,16 @@ public class Project {
     private String name;
     private String description;
     private Integer ownerId;
-    private String createdAt;
+    private String createdAt = null;
     
     public Project() {
         
     }
 
-    public Project(String name, String description, Integer ownerId, String createdAt) {
+    public Project(String name, String description, Integer ownerId) {
         this.name = name;
         this.description = description;
         this.ownerId = ownerId;
-        this.createdAt = createdAt;
     }
 
     public Integer getId() {

@@ -16,8 +16,8 @@ public class MySQLDaoManager implements DAOManager {
     private ProjectDAO projects = null;
     
     public MySQLDaoManager(String host, String database, String username, String password) throws SQLException {
-        conn = 
-            DriverManager.getConnection("jdbc:mysql://" + host + "/" + database + "?serverTimezone=UTC", username, password);
+        conn = DriverManager
+                .getConnection("jdbc:mysql://" + host + "/" + database + "?serverTimezone=UTC", username, password);
     }
 
     @Override
@@ -27,8 +27,7 @@ public class MySQLDaoManager implements DAOManager {
         }
         return users;
     }
-    
-    // crear implementacion de ProjectDAO
+
     @Override
     public ProjectDAO getProjectDAO() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
