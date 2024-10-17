@@ -1,11 +1,14 @@
 package cl.ricardo.projectManagement.dataAccess.dao.mysql;
 
+import cl.ricardo.projectManagement.dataAccess.User;
+import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.ProjectDAO;
 import cl.ricardo.projectManagement.dataAccess.dao.UserDAO;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
+import java.util.List;
 
 public class MySQLDaoManager implements DAOManager {
     
@@ -30,8 +33,16 @@ public class MySQLDaoManager implements DAOManager {
 
     @Override
     public ProjectDAO getProjectDAO() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (projects == null) {
+            projects = new MySQLProjectDAO(conn);
+        }
+        return projects;
     }
     
+    public static void main(String[] args) throws SQLException, DAOException {
+        MySQLDaoManager daoManager = new MySQLDaoManager("localhost", "project_management_system", "root", "");
+        List<User> users = daoManager.getUserDAO().getAll();
+        System.out.println(users);
+    }
     
 }
