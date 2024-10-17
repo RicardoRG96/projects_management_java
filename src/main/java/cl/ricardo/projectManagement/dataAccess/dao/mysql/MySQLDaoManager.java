@@ -23,7 +23,7 @@ public class MySQLDaoManager implements DAOManager {
     @Override
     public UserDAO getUserDAO() {
         if (users == null) {
-            users = new MySQLUserDAO(conn);
+            users = new MySQLUserDao(conn);
         }
         return users;
     }
