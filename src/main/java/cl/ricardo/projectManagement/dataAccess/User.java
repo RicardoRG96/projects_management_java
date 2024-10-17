@@ -11,7 +11,11 @@ public class User {
     private String role;
     
     public User() {
-        
+        this.id = null;
+        this.userName = "";
+        this.email = "";
+        this.Password = "";
+        this.role = "";
     }
     
     public User(String userName, String email, String Password, String role) {
