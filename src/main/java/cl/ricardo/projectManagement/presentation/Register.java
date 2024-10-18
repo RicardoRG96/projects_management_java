@@ -19,10 +19,12 @@ public class Register extends javax.swing.JFrame {
         this.manager = manager;
         this.user = user;
         initComponents();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
     
     public Register() {
         initComponents();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
     
     public void registerUser() throws DAOException {
