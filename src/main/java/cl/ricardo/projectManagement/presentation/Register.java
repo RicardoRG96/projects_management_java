@@ -1,14 +1,12 @@
 package cl.ricardo.projectManagement.presentation;
 
-import cl.ricardo.projectManagement.business.PasswordEncryption;
+import cl.ricardo.projectManagement.business.PasswordHashing;
 import cl.ricardo.projectManagement.dataAccess.User;
+import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.UserDAO;
 import cl.ricardo.projectManagement.dataAccess.dao.mysql.MySQLDaoManager;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 import javax.swing.JOptionPane;
 
 public class Register extends javax.swing.JFrame {
@@ -27,28 +25,19 @@ public class Register extends javax.swing.JFrame {
         initComponents();
     }
     
-    public void registerUser() {
+    public void registerUser() throws DAOException {
         UserDAO userDao = manager.getUserDAO();
         
         String userNameInput = txtUserNameRegister.getText();
         String emailInput = txtEmailRegister.getText();
         String roleInput = cbxRole.getSelectedItem().toString();
         String passwordInput = String.valueOf(txtPasswordRegister.getPassword());
-        try {
-            SecretKey symmetricKey = PasswordEncryption.generateKey();
-            IvParameterSpec iv = PasswordEncryption.generateIv();
-            String passwordEncrypted = new String(PasswordEncryption.encrypt(passwordInput, symmetricKey, iv));
-            user.setUserName(userNameInput);
-            user.setEmail(emailInput);
-            user.setRole(roleInput);
-            user.setPassword(passwordEncrypted);
-            userDao.insert(user);
-            
-        } catch(NoSuchAlgorithmException ex) {
-            System.out.println(ex.toString());
-        } catch(Exception ex) {
-            System.out.println(ex.toString());
-        }
+        String hashedPassword = PasswordHashing.hashPassword(passwordInput);
+        user.setUserName(userNameInput);
+        user.setEmail(emailInput);
+        user.setRole(roleInput);
+        user.setPassword(hashedPassword);
+        userDao.insert(user);
     }
 
     @SuppressWarnings("unchecked")
@@ -277,15 +266,24 @@ public class Register extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPasswordRegisterActionPerformed
 
     private void btnRegisterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegisterMouseClicked
-        if (!"".equals(txtUserNameRegister.getText()) ||
-            !"".equals(txtEmailRegister.getText()) || 
-            cbxRole.getSelectedItem() != null
-        ) {
-            int question = JOptionPane.showConfirmDialog(null, "¿Está seguro que los datos son correctos?");
-            if (question == 0) {
-                registerUser();
-                JOptionPane.showMessageDialog(null, "Usuario registrado con éxito");
+        try {
+            if (!"".equals(txtUserNameRegister.getText()) &&
+                !"".equals(txtEmailRegister.getText()) &&
+                !"".equals(String.valueOf(txtPasswordRegister.getPassword()))
+            ) {
+                int question = JOptionPane.showConfirmDialog(null, "¿Está seguro que los datos son correctos?");
+                if (question == 0) {
+                    registerUser();
+                    JOptionPane.showMessageDialog(null, "Usuario registrado con éxito");
+                    txtUserNameRegister.setText("");
+                    txtEmailRegister.setText("");
+                    txtPasswordRegister.setText("");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Los campos están vaciós");
             }
+        } catch(DAOException ex) {
+            System.out.println(ex.toString());
         }
     }//GEN-LAST:event_btnRegisterMouseClicked
 

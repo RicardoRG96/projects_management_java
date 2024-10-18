@@ -1,10 +1,12 @@
 package cl.ricardo.projectManagement.presentation;
 
+import cl.ricardo.projectManagement.business.PasswordHashing;
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.mysql.MySQLDaoManager;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 public class Login extends javax.swing.JFrame {
     
@@ -25,8 +27,16 @@ public class Login extends javax.swing.JFrame {
     public void loginUser() throws DAOException {
         String userNameOrEmail = txtUserNameLogin.getText();
         user = manager.getUserDAO().getUserByEmailOrUserName(userNameOrEmail);
-        String encryptedUserPassword = user.getPassword();
-        
+        String hashedPassword = user.getPassword();
+        String inputPassword = String.valueOf(txtPasswordLogin.getPassword());
+        boolean passwordMatch = PasswordHashing.hasPasswordMatch(hashedPassword, inputPassword);
+        if (passwordMatch) {
+            MainScreen mainScreen = new MainScreen();
+            mainScreen.setVisible(true);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "Las credenciales no coinciden");
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -112,6 +122,11 @@ public class Login extends javax.swing.JFrame {
         jSeparator2.setBackground(new java.awt.Color(51, 51, 51));
 
         loginBtn.setBackground(new java.awt.Color(127, 161, 195));
+        loginBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                loginBtnMouseClicked(evt);
+            }
+        });
 
         loginBtnText.setFont(new java.awt.Font("Roboto Light", 0, 18)); // NOI18N
         loginBtnText.setForeground(new java.awt.Color(245, 237, 237));
@@ -203,6 +218,20 @@ public class Login extends javax.swing.JFrame {
     private void txtUserNameLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUserNameLoginActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUserNameLoginActionPerformed
+
+    private void loginBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginBtnMouseClicked
+        if (!"".equals(txtUserNameLogin.getText()) &&
+            !"".equals(String.valueOf(txtPasswordLogin.getPassword()))
+           ) {
+                try {
+                    loginUser();
+                } catch (DAOException ex) {
+                    System.out.println(ex.toString());
+                }
+        } else {
+            JOptionPane.showMessageDialog(null, "Los campos están vacíos");
+        }
+    }//GEN-LAST:event_loginBtnMouseClicked
 
     public static void main(String args[]) throws SQLException {
         DAOManager manager = new MySQLDaoManager("localhost", "project_management_system", "root", "");

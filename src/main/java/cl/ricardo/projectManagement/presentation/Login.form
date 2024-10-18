@@ -258,6 +258,9 @@
                   <Color blue="c3" green="a1" red="7f" type="rgb"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="loginBtnMouseClicked"/>
+              </Events>
 
               <Layout>
                 <DimensionLayout dim="0">

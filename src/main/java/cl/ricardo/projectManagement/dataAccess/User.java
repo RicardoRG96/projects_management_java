@@ -9,8 +9,6 @@ public class User {
     private String email;
     private String Password;
     private String role;
-    private String secretKey;
-    private String initializationVector;
     
     public User() {
         this.id = null;
@@ -18,7 +16,6 @@ public class User {
         this.email = "";
         this.Password = "";
         this.role = "";
-        this.secretKey = "";
     }
     
     public User(String userName, String email, String Password, String role) {
