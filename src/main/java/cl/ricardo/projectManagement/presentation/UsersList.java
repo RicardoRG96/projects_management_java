@@ -4,8 +4,6 @@ import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.mysql.MySQLDaoManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class UsersList extends javax.swing.JFrame {
     
@@ -85,6 +83,7 @@ public class UsersList extends javax.swing.JFrame {
         jScrollPane1.setForeground(new java.awt.Color(51, 51, 51));
 
         usersTable.setBackground(new java.awt.Color(245, 237, 237));
+        usersTable.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
         usersTable.setForeground(new java.awt.Color(51, 51, 51));
         usersTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
