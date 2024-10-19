@@ -1,5 +1,6 @@
 package cl.ricardo.projectManagement.presentation;
 
+import cl.ricardo.projectManagement.dataAccess.Project;
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 
 public class MainScreen extends javax.swing.JFrame {
     
@@ -17,13 +19,16 @@ public class MainScreen extends javax.swing.JFrame {
     
     private User user;
     
+    private Project project;
+    
     private ProjectsTableModel model;
 
-    public MainScreen(DAOManager manager, User user) throws DAOException {
+    public MainScreen(DAOManager manager, User user, Project project) throws DAOException {
         initComponents();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.manager = manager;
         this.user = user;
+        this.project = project;
         this.model = new ProjectsTableModel(manager.getProjectDAO(), manager.getUserDAO());
         model.updateModel();
         projectsTable.setModel(model);
@@ -87,7 +92,6 @@ public class MainScreen extends javax.swing.JFrame {
         btnEditProject = new javax.swing.JButton();
         btnDeleteProject = new javax.swing.JButton();
         btnSeeTeams = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         projectsTable = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
@@ -489,6 +493,11 @@ public class MainScreen extends javax.swing.JFrame {
         btnAddProject.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddProject.setPreferredSize(new java.awt.Dimension(50, 50));
         btnAddProject.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddProject.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAddProjectMouseClicked(evt);
+            }
+        });
         btnAddProject.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddProjectActionPerformed(evt);
@@ -501,6 +510,11 @@ public class MainScreen extends javax.swing.JFrame {
         btnEditProject.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEditProject.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnEditProject.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEditProject.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnEditProjectMouseClicked(evt);
+            }
+        });
 
         btnDeleteProject.setBackground(new java.awt.Color(245, 237, 237));
         btnDeleteProject.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar_usuario.png"))); // NOI18N
@@ -516,13 +530,6 @@ public class MainScreen extends javax.swing.JFrame {
         btnSeeTeams.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSeeTeams.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
-        btnSave.setBackground(new java.awt.Color(245, 237, 237));
-        btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/guardar.png"))); // NOI18N
-        btnSave.setBorder(null);
-        btnSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSave.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnSave.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -536,9 +543,7 @@ public class MainScreen extends javax.swing.JFrame {
                 .addComponent(btnDeleteProject, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(btnSeeTeams, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -546,7 +551,6 @@ public class MainScreen extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnEditProject, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSeeTeams, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDeleteProject, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAddProject, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -589,23 +593,22 @@ public class MainScreen extends javax.swing.JFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(132, 132, 132)
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 573, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGap(27, 27, 27)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(172, 172, 172))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab3", jPanel5);
@@ -729,6 +732,43 @@ public class MainScreen extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnAddProjectActionPerformed
 
+    private void btnAddProjectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddProjectMouseClicked
+        ProjectDetailsPanel projectDetails;
+        try {
+            projectDetails = new ProjectDetailsPanel("ADD", project, manager.getUserDAO(), this);
+            projectDetails.setVisible(true);
+            projectDetails.setLocationRelativeTo(null);
+        } catch (DAOException | SQLException ex) {
+                System.out.println(ex.toString());
+        }
+    }//GEN-LAST:event_btnAddProjectMouseClicked
+
+    private void btnEditProjectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditProjectMouseClicked
+        ProjectDetailsPanel projectDetails;
+        try {
+            if (projectsTable.getSelectedRow() >= 0) {
+                setDataFromSelectedTableItem();
+                projectDetails = new ProjectDetailsPanel("MODIFY", project, manager.getUserDAO(), this);
+                projectDetails.setVisible(true);
+                projectDetails.setLocationRelativeTo(null);
+            } else {
+                JOptionPane.showMessageDialog(null, "Seleccione un elemento de la tabla");
+            }
+        } catch (DAOException | SQLException ex) {
+                System.out.println(ex.toString());
+        }
+    }//GEN-LAST:event_btnEditProjectMouseClicked
+
+    private void setDataFromSelectedTableItem() throws DAOException {
+        int selectedRow = projectsTable.getSelectedRow();
+        int ownerId = manager.getUserDAO().getUserIdByUserName(String.valueOf(projectsTable.getValueAt(selectedRow, 3)));
+        project.setId((Integer)projectsTable.getValueAt(selectedRow, 0));
+        project.setName(String.valueOf(projectsTable.getValueAt(selectedRow, 1)));
+        project.setDescription(String.valueOf(projectsTable.getValueAt(selectedRow, 2)));
+        project.setOwnerId((ownerId));
+        project.setCreatedAt(String.valueOf(projectsTable.getValueAt(selectedRow, 4)));
+    }
+    
     private void handleClosing() {
         if (hasUnsaveData()) {
             int answer = showWarningMessage();
@@ -774,13 +814,24 @@ public class MainScreen extends javax.swing.JFrame {
         // this method always return true for demo purpose
         return true;
     }
+
+    public JTable getProjectsTable() {
+        return projectsTable;
+    }
+
+    public void setProjectsTable(JTable projectsTable) {
+        this.projectsTable = projectsTable;
+    }
+    
+    
     
     public static void main(String args[]) throws SQLException {
         DAOManager manager = new MySQLDaoManager("localhost", "project_management_system", "root", "");
         User user = new User();
+        Project project = new Project();
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new MainScreen(manager, user).setVisible(true);
+                new MainScreen(manager, user, project).setVisible(true);
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }
@@ -801,7 +852,6 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnEditProject;
     private javax.swing.JLabel btnListAllUsers;
     private javax.swing.JPanel btnRegisterUserAccess;
-    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSeeTeams;
     private javax.swing.JPanel configTab;
     private javax.swing.JLabel jLabel1;

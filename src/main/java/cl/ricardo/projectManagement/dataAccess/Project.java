@@ -12,7 +12,9 @@ public class Project {
     private String createdAt = null;
     
     public Project() {
-        
+        this.name = "";
+        this.description = "";
+        this.ownerId = null;
     }
 
     public Project(String name, String description, Integer ownerId) {

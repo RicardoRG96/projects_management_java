@@ -21,4 +21,6 @@ public interface UserDAO extends DAO<User, Integer> {
     User getElement(int id) throws DAOException;
     
     User getUserByEmailOrUserName(String userInfo) throws DAOException;
+    
+    int getUserIdByUserName(String userName) throws DAOException;
 }
