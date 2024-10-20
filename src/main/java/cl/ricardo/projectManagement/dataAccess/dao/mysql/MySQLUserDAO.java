@@ -10,13 +10,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MySQLUserDAO implements UserDAO {
     
     final String INSERT = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)";
-    final String UPDATE = "UPDATE users SET username = ?, email = ?. password = ?, role = ? WHERE id = ?";
+    final String UPDATE = "UPDATE users SET username = ?, email = ?, password = ?, role = ? WHERE id = ?";
     final String DELETE = "DELETE FROM users WHERE id = ?";
     final String GETALL = "SELECT * FROM users";
     final String GETONE = "SELECT * FROM users WHERE id = ?";

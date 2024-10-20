@@ -1,19 +1,22 @@
 package cl.ricardo.projectManagement.presentation;
 
+import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
-import cl.ricardo.projectManagement.dataAccess.dao.mysql.MySQLDaoManager;
-import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 public class UsersList extends javax.swing.JFrame {
     
     private DAOManager manager;
     
+    private User user;
+    
     private UsersTableModel model;
     
-    public UsersList(DAOManager manager) throws DAOException {
+    public UsersList(DAOManager manager, User user) throws DAOException {
         initComponents();
         this.manager = manager;
+        this.user = user;
         this.model = new UsersTableModel(manager.getUserDAO());
         this.model.updateModel();
         this.usersTable.setModel(model);
@@ -52,28 +55,38 @@ public class UsersList extends javax.swing.JFrame {
         btnDeleteUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar_usuario.png"))); // NOI18N
         btnDeleteUser.setBorder(null);
         btnDeleteUser.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDeleteUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnDeleteUserMouseClicked(evt);
+            }
+        });
 
         btnEditUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar.png"))); // NOI18N
         btnEditUser.setBorder(null);
         btnEditUser.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEditUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnEditUserMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(150, Short.MAX_VALUE)
-                .addComponent(btnDeleteUser, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addContainerGap(138, Short.MAX_VALUE)
                 .addComponent(btnEditUser, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(209, 209, 209))
+                .addGap(36, 36, 36)
+                .addComponent(btnDeleteUser, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(216, 216, 216))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(btnDeleteUser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(btnEditUser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnEditUser, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -94,7 +107,7 @@ public class UsersList extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, true, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -124,18 +137,58 @@ public class UsersList extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    public static void main(String args[]) throws SQLException {
-        DAOManager manager = new MySQLDaoManager("localhost", "project_management_system", "root", "");
-        java.awt.EventQueue.invokeLater(() -> {
+
+    private void btnEditUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditUserMouseClicked
+        if (usersTable.getSelectedRow() >= 0) {
             try {
-                new UsersList(manager).setVisible(true);
+                editUser();
+                UserEdition userEditionScreen = new UserEdition(manager, user, model);
+                userEditionScreen.setVisible(true);
+                userEditionScreen.setLocationRelativeTo(null);
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }
-        });
-    }
+        } else {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una fila");
+        }
+    }//GEN-LAST:event_btnEditUserMouseClicked
 
+    private void editUser() throws DAOException {
+        int currentSelectedRow = usersTable.getSelectedRow();
+        int userId = (int) usersTable.getValueAt(currentSelectedRow, 0);
+        String name = String.valueOf(usersTable.getValueAt(currentSelectedRow, 1));
+        String email = String.valueOf(usersTable.getValueAt(currentSelectedRow, 2));
+        String role = String.valueOf(usersTable.getValueAt(currentSelectedRow, 3));
+        user.setId(userId);
+        user.setUserName(name);
+        user.setEmail(email);
+        user.setRole(role);
+    }
+    
+    private void btnDeleteUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteUserMouseClicked
+        if (usersTable.getSelectedRow() >= 0) {
+            int question = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar este usuario?");
+            if (question == 0) {
+                try {
+                    deleteUser();
+                    JOptionPane.showMessageDialog(null, "Usuario eliminado con éxito");
+                    model.updateModel();
+                    model.fireTableDataChanged();
+                } catch (DAOException ex) {
+                    System.out.println(ex.toString());
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una fila");
+        }
+    }//GEN-LAST:event_btnDeleteUserMouseClicked
+    
+    private void deleteUser() throws DAOException {
+        int currentSelectedRow = usersTable.getSelectedRow();
+        int userId = (int) usersTable.getValueAt(currentSelectedRow, 0);
+        manager.getUserDAO().delete(userId);
+    }
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeleteUser;
     private javax.swing.JButton btnEditUser;

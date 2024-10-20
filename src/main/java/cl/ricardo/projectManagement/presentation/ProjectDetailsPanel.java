@@ -187,10 +187,9 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
                     ProjectsTableModel model = mainScreen.getModel();
                     mainScreen.getModel().updateModel();
                     mainScreen.getModel().fireTableDataChanged();
+                    JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
+                    setVisible(false);
                 }
-                JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
-                setVisible(false);
-                
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }
