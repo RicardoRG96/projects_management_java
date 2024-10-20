@@ -3,11 +3,12 @@ package cl.ricardo.projectManagement.presentation;
 import cl.ricardo.projectManagement.dataAccess.Project;
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
-import cl.ricardo.projectManagement.dataAccess.dao.UserDAO;
-import cl.ricardo.projectManagement.dataAccess.dao.mysql.MySQLDaoManager;
+import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
+import cl.ricardo.projectManagement.dataAccess.dao.ProjectDAO;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 public class ProjectDetailsPanel extends javax.swing.JFrame {
@@ -16,16 +17,16 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
     
     private Project project;
     
-    private UserDAO userDao;
+    private DAOManager manager;
     
     private MainScreen mainScreen;
     
-    public ProjectDetailsPanel(String action, Project project, UserDAO userDao, MainScreen mainScreen) 
+    public ProjectDetailsPanel(String action, Project project, DAOManager manager, MainScreen mainScreen) 
             throws SQLException, DAOException {
         initComponents();
         this.action = action;
         this.project = project;
-        this.userDao = userDao;
+        this.manager = manager;
         this.mainScreen = mainScreen;
         this.loadData();
         this.listAllUsers();
@@ -50,7 +51,8 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
             int currentRow = projecsTable.getSelectedRow();
             String projectName = projecsTable.getValueAt(currentRow, 1).toString();
             String projectDescription = projecsTable.getValueAt(currentRow, 2).toString();
-            Object projectManagerName = (Object) userDao.getElement(project.getOwnerId()).getUserName();
+            Object projectManagerName = 
+                    (Object) manager.getUserDAO().getElement(project.getOwnerId()).getUserName();
             txtName.setText(projectName);
             txtDescription.setText(projectDescription);
             cbxManager.setSelectedItem(projectManagerName);
@@ -58,36 +60,30 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
     }
     
     private void listAllUsers() throws DAOException {
-        List<User> usersList = userDao.getAll();
+        List<User> usersList = manager.getUserDAO().getAll();
         List<String> usersName = 
                 usersList.stream().map(user -> user.getUserName()).collect(Collectors.toList());
         usersName.stream().forEach(name -> cbxManager.addItem(name));
     }
     
-//    public void loadData() throws DAOException {
-//        if (project != null) {
-//            if (this.action.equals("MODIFY")) {
-//                txtName.setText(project.getName());
-//                txtDescription.setText(project.getDescription());
-//                String managerName = userDao.getElement(project.getOwnerId()).getUserName();
-//                cbxManager.setSelectedItem(managerName);
-//            }
-//        } else {
-//            txtName.setText("");
-//            txtDescription.setText("");
-//            cbxManager.setSelectedItem(null);
-//        }
-//    }
-//    
-//    public void saveData() throws DAOException {
-//        if (project == null) {
-//            project = new Project();
-//        }
-//        int managerId = userDao.getUserIdByUserName((String)cbxManager.getSelectedItem());
-//        project.setName(txtName.getText());
-//        project.setDescription(txtDescription.getText());
-//        project.setOwnerId(managerId);
-//    }
+    public void saveData() throws DAOException {
+        ProjectDAO projectDao = manager.getProjectDAO();
+        String projectName = txtName.getText();
+        String projectDescription = txtDescription.getText();
+        String projectManagerName = String.valueOf(cbxManager.getSelectedItem());
+        int projectManagerId = manager.getUserDAO().getUserIdByUserName(projectManagerName);
+        if (this.action.equals("ADD")) {
+            project.setName(projectName);
+            project.setDescription(projectDescription);
+            project.setOwnerId(projectManagerId);
+            projectDao.insert(project);
+        } else if (this.action.equals("MODIFY")) {
+            project.setName(projectName);
+            project.setDescription(projectDescription);
+            project.setOwnerId(projectManagerId);
+            projectDao.update(project);
+        }
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -104,8 +100,6 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
         btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(539, 389));
-        setPreferredSize(new java.awt.Dimension(539, 389));
 
         jPanel1.setBackground(new java.awt.Color(245, 237, 237));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -155,6 +149,11 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
         btnSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSave.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSave.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSaveMouseClicked(evt);
+            }
+        });
         jPanel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 260, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -174,6 +173,31 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
     private void cbxManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxManagerActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbxManagerActionPerformed
+
+    private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
+        if (!"".equals(txtName.getText()) &&
+            !"".equals(txtDescription.getText()) &&
+            cbxManager.getSelectedItem() != null
+        ) {
+            try {
+                int question = JOptionPane.showConfirmDialog(null, 
+                                "¿Está seguro que los datos están correctos?");
+                if (question == 0) {
+                    saveData();
+                    ProjectsTableModel model = mainScreen.getModel();
+                    mainScreen.getModel().updateModel();
+                    mainScreen.getModel().fireTableDataChanged();
+                }
+                JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
+                setVisible(false);
+                
+            } catch (DAOException ex) {
+                System.out.println(ex.toString());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Debe rellenar todos los campos");
+        }
+    }//GEN-LAST:event_btnSaveMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;

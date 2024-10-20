@@ -12,6 +12,7 @@ import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class MainScreen extends javax.swing.JFrame {
     
@@ -26,13 +27,13 @@ public class MainScreen extends javax.swing.JFrame {
     public MainScreen(DAOManager manager, User user, Project project) throws DAOException {
         initComponents();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setLocationRelativeTo(null);
         this.manager = manager;
         this.user = user;
         this.project = project;
         this.model = new ProjectsTableModel(manager.getProjectDAO(), manager.getUserDAO());
         model.updateModel();
         projectsTable.setModel(model);
-        
          addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -44,6 +45,7 @@ public class MainScreen extends javax.swing.JFrame {
     public MainScreen() {
         initComponents();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setLocationRelativeTo(null);
         
          addWindowListener(new WindowAdapter() {
             @Override
@@ -522,6 +524,11 @@ public class MainScreen extends javax.swing.JFrame {
         btnDeleteProject.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnDeleteProject.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnDeleteProject.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDeleteProject.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnDeleteProjectMouseClicked(evt);
+            }
+        });
 
         btnSeeTeams.setBackground(new java.awt.Color(245, 237, 237));
         btnSeeTeams.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/grupos.png"))); // NOI18N
@@ -735,7 +742,7 @@ public class MainScreen extends javax.swing.JFrame {
     private void btnAddProjectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddProjectMouseClicked
         ProjectDetailsPanel projectDetails;
         try {
-            projectDetails = new ProjectDetailsPanel("ADD", project, manager.getUserDAO(), this);
+            projectDetails = new ProjectDetailsPanel("ADD", project, manager, this);
             projectDetails.setVisible(true);
             projectDetails.setLocationRelativeTo(null);
         } catch (DAOException | SQLException ex) {
@@ -748,7 +755,7 @@ public class MainScreen extends javax.swing.JFrame {
         try {
             if (projectsTable.getSelectedRow() >= 0) {
                 setDataFromSelectedTableItem();
-                projectDetails = new ProjectDetailsPanel("MODIFY", project, manager.getUserDAO(), this);
+                projectDetails = new ProjectDetailsPanel("MODIFY", project, manager, this);
                 projectDetails.setVisible(true);
                 projectDetails.setLocationRelativeTo(null);
             } else {
@@ -761,7 +768,8 @@ public class MainScreen extends javax.swing.JFrame {
 
     private void setDataFromSelectedTableItem() throws DAOException {
         int selectedRow = projectsTable.getSelectedRow();
-        int ownerId = manager.getUserDAO().getUserIdByUserName(String.valueOf(projectsTable.getValueAt(selectedRow, 3)));
+        int ownerId = manager.getUserDAO()
+                .getUserIdByUserName(String.valueOf(projectsTable.getValueAt(selectedRow, 3)));
         project.setId((Integer)projectsTable.getValueAt(selectedRow, 0));
         project.setName(String.valueOf(projectsTable.getValueAt(selectedRow, 1)));
         project.setDescription(String.valueOf(projectsTable.getValueAt(selectedRow, 2)));
@@ -769,24 +777,48 @@ public class MainScreen extends javax.swing.JFrame {
         project.setCreatedAt(String.valueOf(projectsTable.getValueAt(selectedRow, 4)));
     }
     
+    private void btnDeleteProjectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteProjectMouseClicked
+        if (projectsTable.getSelectedRow() >= 0) {
+            try {
+                int question =JOptionPane.showConfirmDialog(null, 
+                                "¿Está seguro que desea eliminar el elemento seleccionado?");
+                if (question == 0) {
+                    deleteProject();
+                    JOptionPane.showMessageDialog(null, "Eliminado con éxito");
+                    model.updateModel();
+                    model.fireTableDataChanged();
+                }
+            } catch (DAOException ex) {
+                System.out.println(ex.toString());
+            }
+            
+        } else {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un elemento");
+        }
+    }//GEN-LAST:event_btnDeleteProjectMouseClicked
+    
+    private void deleteProject() throws DAOException {
+        int currentRow = projectsTable.getSelectedRow();
+        int projectId = (int)projectsTable.getValueAt(currentRow, 0);
+        manager.getProjectDAO().delete(projectId);
+    }
+    
     private void handleClosing() {
         if (hasUnsaveData()) {
             int answer = showWarningMessage();
              
             switch (answer) {
-                case JOptionPane.YES_OPTION:
+                case JOptionPane.YES_OPTION -> {
                     System.out.println("Guardar y salir");
                     dispose();
-                    break;
+                }
                      
-                case JOptionPane.NO_OPTION:
+                case JOptionPane.NO_OPTION -> {
                     System.out.println("No guardar y salir");
                     dispose();
-                    break;
+                }
                      
-                case JOptionPane.CANCEL_OPTION:
-                    System.out.println("No salir");
-                    break;
+                case JOptionPane.CANCEL_OPTION -> System.out.println("No salir");
             }
         } else {
             dispose();
@@ -822,8 +854,14 @@ public class MainScreen extends javax.swing.JFrame {
     public void setProjectsTable(JTable projectsTable) {
         this.projectsTable = projectsTable;
     }
-    
-    
+
+    public ProjectsTableModel getModel() {
+        return model;
+    }
+
+    public void setModel(ProjectsTableModel model) {
+        this.model = model;
+    }
     
     public static void main(String args[]) throws SQLException {
         DAOManager manager = new MySQLDaoManager("localhost", "project_management_system", "root", "");
