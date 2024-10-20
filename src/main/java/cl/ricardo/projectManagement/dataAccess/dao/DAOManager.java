@@ -5,4 +5,6 @@ public interface DAOManager {
     UserDAO getUserDAO();
     
     ProjectDAO getProjectDAO();
+    
+    WorkGroupDAO getWorkGroupDAO();
 }

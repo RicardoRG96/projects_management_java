@@ -1,5 +1,6 @@
 package cl.ricardo.projectManagement.presentation;
 
+import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 
 public class WorkGroupsList extends javax.swing.JFrame {
@@ -8,10 +9,13 @@ public class WorkGroupsList extends javax.swing.JFrame {
     
     private int projectId;
     
-//    private WorkGroupsTableModel;
+    private WorkGroupsTableModel model;
     
-    public WorkGroupsList() {
+    public WorkGroupsList() throws DAOException {
         initComponents();
+        this.model = new WorkGroupsTableModel(manager.getWorkGroupDAO(), manager.getProjectDAO(), manager.getUserDAO());
+        model.updateModel();
+        workGroupsTable.setModel(model);
     }
 
     @SuppressWarnings("unchecked")
@@ -75,17 +79,17 @@ public class WorkGroupsList extends javax.swing.JFrame {
         workGroupsTable.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         workGroupsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "PROYECTO", "NOMBRE", "LIDER", "FECHA CREACION"
+                "ID", "NOMBRE PROYECTO", "NOMBRE EQUIPO", "LIDER", "FECHA CREACION"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -95,10 +99,11 @@ public class WorkGroupsList extends javax.swing.JFrame {
         workGroupsTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(workGroupsTable);
         if (workGroupsTable.getColumnModel().getColumnCount() > 0) {
-            workGroupsTable.getColumnModel().getColumn(0).setPreferredWidth(40);
-            workGroupsTable.getColumnModel().getColumn(1).setPreferredWidth(50);
+            workGroupsTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+            workGroupsTable.getColumnModel().getColumn(1).setPreferredWidth(40);
             workGroupsTable.getColumnModel().getColumn(2).setPreferredWidth(50);
             workGroupsTable.getColumnModel().getColumn(3).setPreferredWidth(50);
+            workGroupsTable.getColumnModel().getColumn(4).setPreferredWidth(50);
         }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -142,13 +147,6 @@ public class WorkGroupsList extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    public static void main(String args[]) {
-       
-        java.awt.EventQueue.invokeLater(() -> {
-            new WorkGroupsList().setVisible(true);
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSeeMembers;

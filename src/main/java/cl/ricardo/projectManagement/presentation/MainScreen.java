@@ -8,6 +8,8 @@ import cl.ricardo.projectManagement.dataAccess.dao.mysql.MySQLDaoManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -536,6 +538,11 @@ public class MainScreen extends javax.swing.JFrame {
         btnSeeTeams.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSeeTeams.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSeeTeams.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSeeTeams.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSeeTeamsMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -796,6 +803,19 @@ public class MainScreen extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Debe seleccionar un elemento");
         }
     }//GEN-LAST:event_btnDeleteProjectMouseClicked
+
+    private void btnSeeTeamsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSeeTeamsMouseClicked
+        if (projectsTable.getSelectedRow() >= 0) {
+            WorkGroupsList workGroupsList;
+            try {
+                workGroupsList = new WorkGroupsList();
+                workGroupsList.setVisible(true);
+                workGroupsList.setLocationRelativeTo(null);
+            } catch (DAOException ex) {
+                System.out.println(ex.toString());
+            }
+        }
+    }//GEN-LAST:event_btnSeeTeamsMouseClicked
     
     private void deleteProject() throws DAOException {
         int currentRow = projectsTable.getSelectedRow();
