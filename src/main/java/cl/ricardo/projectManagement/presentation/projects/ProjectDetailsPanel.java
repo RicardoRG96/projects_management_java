@@ -29,8 +29,8 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
         this.project = project;
         this.manager = manager;
         this.mainScreen = mainScreen;
-        this.loadData();
         this.listAllUsers();
+        this.loadData();
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
@@ -46,13 +46,17 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
         if (this.action.equals("ADD")) {
             txtName.setText("");
             txtDescription.setText("");
-            cbxManager.setSelectedIndex(0);
+            cbxManager.setSelectedItem(null);
         } else if (this.action.equals("MODIFY")){
-            JTable projecsTable = mainScreen.getProjectsTable();
-            int currentRow = projecsTable.getSelectedRow();
-            String projectName = projecsTable.getValueAt(currentRow, 1).toString();
-            String projectDescription = projecsTable.getValueAt(currentRow, 2).toString();
-            Object projectManagerName = 
+//            JTable projecsTable = mainScreen.getProjectsTable();
+//            int currentRow = projecsTable.getSelectedRow();
+//            String projectName = projecsTable.getValueAt(currentRow, 1).toString();
+//            String projectDescription = projecsTable.getValueAt(currentRow, 2).toString();
+//            Object projectManagerName = 
+//                    (Object) manager.getUserDAO().getElement(project.getOwnerId()).getUserName();
+            String projectName = project.getName();
+            String projectDescription = project.getDescription();
+            Object projectManagerName =
                     (Object) manager.getUserDAO().getElement(project.getOwnerId()).getUserName();
             txtName.setText(projectName);
             txtDescription.setText(projectDescription);

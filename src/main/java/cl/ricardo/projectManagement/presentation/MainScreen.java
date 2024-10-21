@@ -1027,12 +1027,13 @@ public class MainScreen extends javax.swing.JFrame {
 
     private void setDataFromSelectedTableItem() throws DAOException {
         int selectedRow = projectsTable.getSelectedRow();
-        int ownerId = manager.getUserDAO()
+        int ownerId = manager
+                .getUserDAO()
                 .getUserIdByUserName(String.valueOf(projectsTable.getValueAt(selectedRow, 3)));
         project.setId((Integer)projectsTable.getValueAt(selectedRow, 0));
         project.setName(String.valueOf(projectsTable.getValueAt(selectedRow, 1)));
         project.setDescription(String.valueOf(projectsTable.getValueAt(selectedRow, 2)));
-        project.setOwnerId((ownerId));
+        project.setOwnerId(ownerId);
         project.setCreatedAt(String.valueOf(projectsTable.getValueAt(selectedRow, 4)));
     }
     

@@ -28,18 +28,18 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
         this.workGroup = workGroup;
         this.manager = manager;
         this.mainScreen = mainScreen;
-        listAllUsers();
         listAllProjects();
+        listAllUsers();
+        loadData();
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
     
     private void loadData() throws DAOException {
-        switch (this.action) {
-            case "ADD":
+        if (this.action.equals("ADD")) {
                 cbxProject.setSelectedItem(null);
                 txtWorkGroupName.setText("");
-                cbxLeader.setSelectedIndex(0);
-            case "MODIFY":
+                cbxLeader.setSelectedItem(null);
+            } else if (this.action.equals("MODIFY")) {
                 JTable workGroupsTable = mainScreen.getWorkGroupsTable();
                 int selectedRow = workGroupsTable.getSelectedRow();
                 int projectId = (int) workGroupsTable.getValueAt(selectedRow, 1);
@@ -50,7 +50,7 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                 cbxProject.setSelectedItem(projectName);
                 txtWorkGroupName.setText(workGroupName);
                 cbxLeader.setSelectedItem(leaderId);
-        }
+            }
     }
     
     private void listAllUsers() throws DAOException {
@@ -72,7 +72,7 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                 .collect(Collectors.toList());
         projectsName
                 .stream()
-                .forEach(project -> cbxLeader.addItem(project));
+                .forEach(project -> cbxProject.addItem(project));
     }
     
     private void saveData() throws DAOException {
@@ -111,7 +111,6 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
         btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(452, 350));
 
         jPanel1.setBackground(new java.awt.Color(245, 237, 237));
 
@@ -254,8 +253,8 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                 if (question == 0) {
                     saveData();
                     WorkGroupsTableModel model = mainScreen.getWorkGroupsTableModel();
-                    mainScreen.getProjectsTableModel().updateModel();
-                    mainScreen.getProjectsTableModel().fireTableDataChanged();
+                    mainScreen.getWorkGroupsTableModel().updateModel();
+                    mainScreen.getWorkGroupsTableModel().fireTableDataChanged();
                     JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
                     setVisible(false);
                 }
