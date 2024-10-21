@@ -48,12 +48,6 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
             txtDescription.setText("");
             cbxManager.setSelectedItem(null);
         } else if (this.action.equals("MODIFY")){
-//            JTable projecsTable = mainScreen.getProjectsTable();
-//            int currentRow = projecsTable.getSelectedRow();
-//            String projectName = projecsTable.getValueAt(currentRow, 1).toString();
-//            String projectDescription = projecsTable.getValueAt(currentRow, 2).toString();
-//            Object projectManagerName = 
-//                    (Object) manager.getUserDAO().getElement(project.getOwnerId()).getUserName();
             String projectName = project.getName();
             String projectDescription = project.getDescription();
             Object projectManagerName =

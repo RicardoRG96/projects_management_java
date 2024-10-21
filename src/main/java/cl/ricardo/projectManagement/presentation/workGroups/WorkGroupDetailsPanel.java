@@ -5,6 +5,8 @@ import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.WorkGroup;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
+import cl.ricardo.projectManagement.dataAccess.dao.ProjectDAO;
+import cl.ricardo.projectManagement.dataAccess.dao.UserDAO;
 import cl.ricardo.projectManagement.dataAccess.dao.WorkGroupDAO;
 import cl.ricardo.projectManagement.presentation.MainScreen;
 import java.util.List;
@@ -40,16 +42,22 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                 txtWorkGroupName.setText("");
                 cbxLeader.setSelectedItem(null);
             } else if (this.action.equals("MODIFY")) {
-                JTable workGroupsTable = mainScreen.getWorkGroupsTable();
-                int selectedRow = workGroupsTable.getSelectedRow();
-                int projectId = (int) workGroupsTable.getValueAt(selectedRow, 1);
-                int leaderId = (int) workGroupsTable.getValueAt(selectedRow, 3);
-                Object projectName = (Object) manager.getProjectDAO().getElement(projectId).getName();
-                Object leaderName = (Object) manager.getUserDAO().getElement(leaderId).getUserName();
-                String workGroupName = workGroupsTable.getValueAt(selectedRow, 2).toString();
+//                JTable workGroupsTable = mainScreen.getWorkGroupsTable();
+//                int selectedRow = workGroupsTable.getSelectedRow();
+//                int projectId = (int) workGroupsTable.getValueAt(selectedRow, 1);
+//                int leaderId = (int) workGroupsTable.getValueAt(selectedRow, 3);
+//                Object projectName = (Object) manager.getProjectDAO().getElement(projectId).getName();
+//                Object leaderName = (Object) manager.getUserDAO().getElement(leaderId).getUserName();
+//                String workGroupName = workGroupsTable.getValueAt(selectedRow, 2).toString();
+                ProjectDAO projectDao = manager.getProjectDAO();
+                UserDAO userDao = manager.getUserDAO();
+                String projectName = projectDao.getElement(workGroup.getProjectId()).getName();
+                String workGroupName = workGroup.getName();
+                String leaderName = userDao.getElement(workGroup.getLeaderId()).getUserName();
+
                 cbxProject.setSelectedItem(projectName);
                 txtWorkGroupName.setText(workGroupName);
-                cbxLeader.setSelectedItem(leaderId);
+                cbxLeader.setSelectedItem(leaderName);
             }
     }
     
@@ -252,7 +260,6 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                     "¿Está seguro que los datos están correctos?");
                 if (question == 0) {
                     saveData();
-                    WorkGroupsTableModel model = mainScreen.getWorkGroupsTableModel();
                     mainScreen.getWorkGroupsTableModel().updateModel();
                     mainScreen.getWorkGroupsTableModel().fireTableDataChanged();
                     JOptionPane.showMessageDialog(null, "Datos guardados con éxito");

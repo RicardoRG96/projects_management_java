@@ -16,6 +16,8 @@ import cl.ricardo.projectManagement.presentation.workGroups.WorkGroupsTableModel
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -1013,7 +1015,7 @@ public class MainScreen extends javax.swing.JFrame {
         ProjectDetailsPanel projectDetails;
         try {
             if (projectsTable.getSelectedRow() >= 0) {
-                setDataFromSelectedTableItem();
+                setDataFromSelectedProjectsTableItem();
                 projectDetails = new ProjectDetailsPanel("MODIFY", project, manager, this);
                 projectDetails.setVisible(true);
                 projectDetails.setLocationRelativeTo(null);
@@ -1025,7 +1027,7 @@ public class MainScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEditProjectMouseClicked
 
-    private void setDataFromSelectedTableItem() throws DAOException {
+    private void setDataFromSelectedProjectsTableItem() throws DAOException {
         int selectedRow = projectsTable.getSelectedRow();
         int ownerId = manager
                 .getUserDAO()
@@ -1108,9 +1110,41 @@ public class MainScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddWorkGroupActionPerformed
 
     private void btnEditWorkgroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditWorkgroupMouseClicked
-        // TODO add your handling code here:
+        if (workGroupsTable.getSelectedRow() >= 0) {
+            WorkGroupDetailsPanel workGroupDetailsPanel;
+                try {
+                    setDataFromSelectedWorkGroupsTableItem();
+                    workGroupDetailsPanel = new WorkGroupDetailsPanel(
+                            "MODIFY", 
+                            workGroup, 
+                            manager, 
+                            this
+                    );
+                    workGroupDetailsPanel.setVisible(true);
+                    workGroupDetailsPanel.setLocationRelativeTo(null);
+                } catch (DAOException ex) {
+                    System.out.println(ex.toString());
+                }
+            } else {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una fila");
+        }
     }//GEN-LAST:event_btnEditWorkgroupMouseClicked
 
+    private void setDataFromSelectedWorkGroupsTableItem() throws DAOException {
+        int selectedRow = workGroupsTable.getSelectedRow();
+        int projectId = manager
+                .getProjectDAO()
+                .getProjectIdByProjectName(String.valueOf(workGroupsTable.getValueAt(selectedRow, 1)));
+        int leaderId = manager
+                .getUserDAO()
+                .getUserIdByUserName(String.valueOf(workGroupsTable.getValueAt(selectedRow, 3)));
+        workGroup.setId((Integer)workGroupsTable.getValueAt(selectedRow, 0));
+        workGroup.setProjectId(projectId);
+        workGroup.setName(String.valueOf(workGroupsTable.getValueAt(selectedRow, 2)));
+        workGroup.setLeaderId(leaderId);
+        workGroup.setCreatedAt(String.valueOf(workGroupsTable.getValueAt(selectedRow, 4)));
+    }
+    
     private void btnDeleteWorkGroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteWorkGroupMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_btnDeleteWorkGroupMouseClicked
