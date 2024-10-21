@@ -9,15 +9,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MySQLWorkGroupDAO implements WorkGroupDAO {
     
     final String INSERT = "INSERT INTO workgroups (project_id, name, leader_id) VALUES (?, ?, ?)";
     final String UPDATE = "UPDATE workgroups SET project_id = ?, name = ?, leader_id = ? WHERE id = ?";
     final String DELETE = "DELETE FROM workgroups WHERE id = ?";
-    final String GETALL = "SELECT * FROM workgroups";
+    final String GETALL = "SELECT * FROM workgroups ORDER BY project_id";
     final String GETONE = "SELECT * FROM workgroups WHERE id = ?";
     final String GET_ONE_BY_PROJECT_ID = "SELECT * FROM workgroups WHERE project_id = ?";
     
@@ -134,8 +132,10 @@ public class MySQLWorkGroupDAO implements WorkGroupDAO {
         int projectId = resultSet.getInt("project_id");
         String name = resultSet.getString("name");
         int leaderId = resultSet.getInt("leader_id");
-        WorkGroup workGroup = new WorkGroup(projectId, name, leaderId);
+        WorkGroup workGroup = new WorkGroup(name);
         workGroup.setId(resultSet.getInt("id"));
+        workGroup.setProjectId(projectId);
+        workGroup.setLeaderId(leaderId);
         workGroup.setCreatedAt(resultSet.getDate("created_at").toString());
         return workGroup;
     }

@@ -6,25 +6,20 @@ public class WorkGroup {
     
     private Integer id = null;
     
-    private Integer projectId;
+    private Integer projectId = null;
     
     private String name;
     
-    private Integer leaderId;
+    private Integer leaderId = null;
     
     private String createdAt = null;
 
     public WorkGroup() {
-        this.projectId = null;
         this.name = "";
-        this.leaderId = null;
-        this.createdAt = "";
     }
 
-    public WorkGroup(Integer projectId, String name, Integer leaderId) {
-        this.projectId = projectId;
+    public WorkGroup(String name) {
         this.name = name;
-        this.leaderId = leaderId;
     }
 
     public Integer getId() {

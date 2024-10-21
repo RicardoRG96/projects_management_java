@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
-class WorkGroupsTableModel extends AbstractTableModel {
+public class WorkGroupsTableModel extends AbstractTableModel {
 
     private WorkGroupDAO workGroups;
     
@@ -26,22 +26,17 @@ class WorkGroupsTableModel extends AbstractTableModel {
         this.users = users;
     }
     
-    public void updateModel(String action, int projectId) throws DAOException {
-        switch (action) {
-            case "ALL":
-                data = workGroups.getAll();
-            case "BY_PROJECT":
-                data = workGroups.getGroupsByProject(projectId);
-        }
+    public void updateModel() throws DAOException {
+        data = workGroups.getAll();
     }
     
     @Override
     public String getColumnName(int column) {
         return switch (column) {
             case 0 -> "ID";
-            case 1 -> "NOMBRE PROYECTO";
+            case 1 -> "PROYECTO ASIGNADO";
             case 2 -> "NOMBRE EQUIPO";
-            case 3 -> "LIDER";
+            case 3 -> "LIDER";  
             case 4 -> "FECHA CREACION";
             default -> "[no]";
         };

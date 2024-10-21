@@ -6,18 +6,20 @@ import java.util.List;
 public interface ProjectDAO extends DAO<Project, Integer> {
  
     @Override
-    public void insert(Project project) throws DAOException;
+    void insert(Project project) throws DAOException;
 
     @Override
-    public void update(Project project) throws DAOException;
+    void update(Project project) throws DAOException;
 
     @Override
-    public void delete(int id) throws DAOException;
+    void delete(int id) throws DAOException;
 
     @Override
-    public List<Project> getAll() throws DAOException;
+    List<Project> getAll() throws DAOException;
 
     @Override
-    public Project getElement(int id) throws DAOException;
+    Project getElement(int id) throws DAOException;
+    
+    int getProjectIdByProjectName(String projectName) throws DAOException;
     
 }

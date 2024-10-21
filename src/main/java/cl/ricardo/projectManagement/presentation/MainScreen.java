@@ -6,20 +6,20 @@ import cl.ricardo.projectManagement.presentation.users.UsersList;
 import cl.ricardo.projectManagement.dataAccess.Project;
 import cl.ricardo.projectManagement.dataAccess.ProjectMember;
 import cl.ricardo.projectManagement.dataAccess.User;
+import cl.ricardo.projectManagement.dataAccess.WorkGroup;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.mysql.MySQLDaoManager;
 import cl.ricardo.projectManagement.presentation.projects.ProjectMembersList;
+import cl.ricardo.projectManagement.presentation.workGroups.WorkGroupDetailsPanel;
+import cl.ricardo.projectManagement.presentation.workGroups.WorkGroupsTableModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 public class MainScreen extends javax.swing.JFrame {
     
@@ -31,9 +31,19 @@ public class MainScreen extends javax.swing.JFrame {
     
     private ProjectMember projectMember;
     
-    private ProjectsTableModel model;
+    private WorkGroup workGroup;
+    
+    private ProjectsTableModel projectsTableModel;
+    
+    private WorkGroupsTableModel workGroupsTableModel;
 
-    public MainScreen(DAOManager manager, User user, Project project, ProjectMember projectMember) throws DAOException {
+    public MainScreen(
+            DAOManager manager, 
+            User user, 
+            Project project, 
+            ProjectMember projectMember,
+            WorkGroup workGroup
+    ) throws DAOException {
         initComponents();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -41,9 +51,17 @@ public class MainScreen extends javax.swing.JFrame {
         this.user = user;
         this.project = project;
         this.projectMember = projectMember;
-        this.model = new ProjectsTableModel(manager.getProjectDAO(), manager.getUserDAO());
-        model.updateModel();
-        projectsTable.setModel(model);
+        this.workGroup = workGroup;
+        this.projectsTableModel = new ProjectsTableModel(manager.getProjectDAO(), manager.getUserDAO());
+        this.workGroupsTableModel = new WorkGroupsTableModel(
+                manager.getWorkGroupDAO(), 
+                manager.getProjectDAO(), 
+                manager.getUserDAO()
+        );
+        projectsTableModel.updateModel();
+        projectsTable.setModel(projectsTableModel);
+        workGroupsTableModel.updateModel();
+        workGroupsTable.setModel(workGroupsTableModel);
          addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -106,7 +124,22 @@ public class MainScreen extends javax.swing.JFrame {
         btnSeeTeams = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         projectsTable = new javax.swing.JTable();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
+        jPanel12 = new javax.swing.JPanel();
+        btnAddWorkGroup = new javax.swing.JButton();
+        btnEditWorkgroup = new javax.swing.JButton();
+        btnDeleteWorkGroup = new javax.swing.JButton();
+        btnSeeMembers = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        workGroupsTable = new javax.swing.JTable();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
@@ -564,9 +597,9 @@ public class MainScreen extends javax.swing.JFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(btnAddProject, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addGap(31, 31, 31)
                 .addComponent(btnEditProject, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addGap(30, 30, 30)
                 .addComponent(btnDeleteProject, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(btnSeeTeams, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -615,6 +648,26 @@ public class MainScreen extends javax.swing.JFrame {
             projectsTable.getColumnModel().getColumn(4).setPreferredWidth(40);
         }
 
+        jLabel9.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel9.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel9.setText("Agregar");
+
+        jLabel10.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel10.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel10.setText("Editar");
+
+        jLabel11.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel11.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel11.setText("Eliminar");
+
+        jLabel12.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel12.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel12.setText("Ver integrantes");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -625,30 +678,216 @@ public class MainScreen extends javax.swing.JFrame {
                 .addContainerGap(25, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(172, 172, 172))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel12)))
+                .addGap(144, 144, 144))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel12))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab3", jPanel5);
+
+        jPanel6.setBackground(new java.awt.Color(245, 237, 237));
+
+        jPanel12.setBackground(new java.awt.Color(247, 249, 242));
+
+        btnAddWorkGroup.setBackground(new java.awt.Color(245, 237, 237));
+        btnAddWorkGroup.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/agregar.png"))); // NOI18N
+        btnAddWorkGroup.setBorder(null);
+        btnAddWorkGroup.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAddWorkGroup.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddWorkGroup.setPreferredSize(new java.awt.Dimension(50, 50));
+        btnAddWorkGroup.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddWorkGroup.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAddWorkGroupMouseClicked(evt);
+            }
+        });
+        btnAddWorkGroup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddWorkGroupActionPerformed(evt);
+            }
+        });
+
+        btnEditWorkgroup.setBackground(new java.awt.Color(245, 237, 237));
+        btnEditWorkgroup.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar.png"))); // NOI18N
+        btnEditWorkgroup.setBorder(null);
+        btnEditWorkgroup.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEditWorkgroup.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnEditWorkgroup.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEditWorkgroup.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnEditWorkgroupMouseClicked(evt);
+            }
+        });
+
+        btnDeleteWorkGroup.setBackground(new java.awt.Color(245, 237, 237));
+        btnDeleteWorkGroup.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar_usuario.png"))); // NOI18N
+        btnDeleteWorkGroup.setBorder(null);
+        btnDeleteWorkGroup.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDeleteWorkGroup.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnDeleteWorkGroup.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDeleteWorkGroup.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnDeleteWorkGroupMouseClicked(evt);
+            }
+        });
+
+        btnSeeMembers.setBackground(new java.awt.Color(245, 237, 237));
+        btnSeeMembers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/grupos.png"))); // NOI18N
+        btnSeeMembers.setBorder(null);
+        btnSeeMembers.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSeeMembers.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSeeMembers.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSeeMembers.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSeeMembersMouseClicked(evt);
+            }
+        });
+        btnSeeMembers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeeMembersActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(btnAddWorkGroup, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
+                .addComponent(btnEditWorkgroup, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addComponent(btnDeleteWorkGroup, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(btnSeeMembers, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnEditWorkgroup, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSeeMembers, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDeleteWorkGroup, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAddWorkGroup, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        jScrollPane2.setBackground(new java.awt.Color(245, 237, 237));
+        jScrollPane2.setForeground(new java.awt.Color(51, 51, 51));
+
+        workGroupsTable.setBackground(new java.awt.Color(245, 237, 237));
+        workGroupsTable.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        workGroupsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "PROYECTO ASIGNADO", "NOMBRE EQUIPO", "LIDER", "FECHA CREACION"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        workGroupsTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(workGroupsTable);
+        if (workGroupsTable.getColumnModel().getColumnCount() > 0) {
+            workGroupsTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+            workGroupsTable.getColumnModel().getColumn(1).setPreferredWidth(60);
+            workGroupsTable.getColumnModel().getColumn(2).setPreferredWidth(60);
+            workGroupsTable.getColumnModel().getColumn(3).setPreferredWidth(50);
+            workGroupsTable.getColumnModel().getColumn(4).setPreferredWidth(50);
+        }
+
+        jLabel4.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel4.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel4.setText("Agregar");
+
+        jLabel5.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel5.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel5.setText("Editar");
+
+        jLabel6.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel6.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel6.setText("Eliminar");
+
+        jLabel7.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel7.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel7.setText("Ver integrantes");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 610, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 576, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(170, 170, 170)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addComponent(jLabel4)
+                                .addGap(30, 30, 30)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(35, 35, 35)
+                                .addComponent(jLabel6)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel7))
+                            .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 455, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16))
         );
 
         jTabbedPane1.addTab("tab4", jPanel6);
@@ -805,8 +1044,8 @@ public class MainScreen extends javax.swing.JFrame {
                 if (question == 0) {
                     deleteProject();
                     JOptionPane.showMessageDialog(null, "Eliminado con éxito");
-                    model.updateModel();
-                    model.fireTableDataChanged();
+                    projectsTableModel.updateModel();
+                    projectsTableModel.fireTableDataChanged();
                 }
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
@@ -851,6 +1090,37 @@ public class MainScreen extends javax.swing.JFrame {
     private void btnSeeTeamsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeeTeamsActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSeeTeamsActionPerformed
+
+    private void btnAddWorkGroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddWorkGroupMouseClicked
+        WorkGroupDetailsPanel workGroupsDetails;
+        try {
+            workGroupsDetails = new WorkGroupDetailsPanel("ADD", workGroup, manager, this);
+            workGroupsDetails.setVisible(true);
+            workGroupsDetails.setLocationRelativeTo(null);
+        } catch (DAOException ex) {
+                System.out.println(ex.toString());
+        }
+    }//GEN-LAST:event_btnAddWorkGroupMouseClicked
+
+    private void btnAddWorkGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddWorkGroupActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAddWorkGroupActionPerformed
+
+    private void btnEditWorkgroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditWorkgroupMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditWorkgroupMouseClicked
+
+    private void btnDeleteWorkGroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteWorkGroupMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDeleteWorkGroupMouseClicked
+
+    private void btnSeeMembersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSeeMembersMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSeeMembersMouseClicked
+
+    private void btnSeeMembersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeeMembersActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSeeMembersActionPerformed
     
     private void deleteProject() throws DAOException {
         int currentRow = projectsTable.getSelectedRow();
@@ -910,22 +1180,41 @@ public class MainScreen extends javax.swing.JFrame {
         this.projectsTable = projectsTable;
     }
 
-    public ProjectsTableModel getModel() {
-        return model;
+    public ProjectsTableModel getProjectsTableModel() {
+        return projectsTableModel;
     }
 
-    public void setModel(ProjectsTableModel model) {
-        this.model = model;
+    public void setProjectsTableModel(ProjectsTableModel projectsTableModel) {
+        this.projectsTableModel = projectsTableModel;
     }
+
+    public WorkGroupsTableModel getWorkGroupsTableModel() {
+        return workGroupsTableModel;
+    }
+
+    public void setWorkGroupsTableModel(WorkGroupsTableModel workGroupsTableModel) {
+        this.workGroupsTableModel = workGroupsTableModel;
+    }
+
+    public JTable getWorkGroupsTable() {
+        return workGroupsTable;
+    }
+
+    public void setWorkGroupsTable(JTable workGroupsTable) {
+        this.workGroupsTable = workGroupsTable;
+    }
+    
+    
     
     public static void main(String args[]) throws SQLException {
         DAOManager manager = new MySQLDaoManager("localhost", "project_management_system", "root", "");
         User user = new User();
         Project project = new Project();
         ProjectMember projectMember = new ProjectMember();
+        WorkGroup workGroup = new WorkGroup();
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new MainScreen(manager, user, project, projectMember).setVisible(true);
+                new MainScreen(manager, user, project, projectMember, workGroup).setVisible(true);
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }
@@ -942,19 +1231,32 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JLabel JLabel7;
     private javax.swing.JPanel JPanel;
     private javax.swing.JButton btnAddProject;
+    private javax.swing.JButton btnAddWorkGroup;
     private javax.swing.JButton btnDeleteProject;
+    private javax.swing.JButton btnDeleteWorkGroup;
     private javax.swing.JButton btnEditProject;
+    private javax.swing.JButton btnEditWorkgroup;
     private javax.swing.JLabel btnListAllUsers;
     private javax.swing.JPanel btnRegisterUserAccess;
+    private javax.swing.JButton btnSeeMembers;
     private javax.swing.JButton btnSeeTeams;
     private javax.swing.JPanel configTab;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -964,6 +1266,7 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel notificationsTab;
     private javax.swing.JPanel projectsTab;
@@ -974,5 +1277,6 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JLabel txtCurrentUserRole;
     private javax.swing.JPanel usersTab;
     private javax.swing.JPanel workGroupsTab;
+    private javax.swing.JTable workGroupsTable;
     // End of variables declaration//GEN-END:variables
 }

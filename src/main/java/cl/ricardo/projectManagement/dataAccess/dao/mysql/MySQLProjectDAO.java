@@ -18,6 +18,7 @@ public class MySQLProjectDAO implements ProjectDAO {
     final String DELETE = "DELETE FROM projects WHERE id = ?";
     final String GETALL = "SELECT * FROM projects";
     final String GETONE = "SELECT * FROM projects WHERE id = ?";
+    final String GET_ID_BY_PROJECTNAME = "SELECT id FROM projects WHERE name = ?";
     
     private Connection conn;
     
@@ -173,6 +174,41 @@ public class MySQLProjectDAO implements ProjectDAO {
         return project;
     }
     
+    @Override
+    public int getProjectIdByProjectName(String projectName) throws DAOException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Integer projectId = null;
+        try {
+            statement = conn.prepareStatement(GET_ID_BY_PROJECTNAME);
+            statement.setString(1, projectName);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                projectId = resultSet.getInt("id");
+            } else {
+                throw new DAOException("No se ha encontrado el registro");
+            }
+        } catch (SQLException ex) {
+            throw new DAOException("Error en SQL", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+        }
+        return projectId;
+    }
+    
     public static void main(String[] args) throws SQLException, DAOException {
         Connection conn = null;
         try {
@@ -189,4 +225,5 @@ public class MySQLProjectDAO implements ProjectDAO {
             }
         }
     }
+    
 }

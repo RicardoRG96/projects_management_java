@@ -46,7 +46,7 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
         if (this.action.equals("ADD")) {
             txtName.setText("");
             txtDescription.setText("");
-            cbxManager.setSelectedItem(null);
+            cbxManager.setSelectedIndex(0);
         } else if (this.action.equals("MODIFY")){
             JTable projecsTable = mainScreen.getProjectsTable();
             int currentRow = projecsTable.getSelectedRow();
@@ -62,9 +62,13 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
     
     private void listAllUsers() throws DAOException {
         List<User> usersList = manager.getUserDAO().getAll();
-        List<String> usersName = 
-                usersList.stream().map(user -> user.getUserName()).collect(Collectors.toList());
-        usersName.stream().forEach(name -> cbxManager.addItem(name));
+        List<String> usersName = usersList
+                .stream()
+                .map(user -> user.getUserName())
+                .collect(Collectors.toList());
+        usersName
+                .stream()
+                .forEach(name -> cbxManager.addItem(name));
     }
     
     public void saveData() throws DAOException {
@@ -73,15 +77,14 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
         String projectDescription = txtDescription.getText();
         String projectManagerName = String.valueOf(cbxManager.getSelectedItem());
         int projectManagerId = manager.getUserDAO().getUserIdByUserName(projectManagerName);
+        
+        project.setName(projectName);
+        project.setDescription(projectDescription);
+        project.setOwnerId(projectManagerId);
+        
         if (this.action.equals("ADD")) {
-            project.setName(projectName);
-            project.setDescription(projectDescription);
-            project.setOwnerId(projectManagerId);
             projectDao.insert(project);
         } else if (this.action.equals("MODIFY")) {
-            project.setName(projectName);
-            project.setDescription(projectDescription);
-            project.setOwnerId(projectManagerId);
             projectDao.update(project);
         }
     }
@@ -185,9 +188,9 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
                                 "¿Está seguro que los datos están correctos?");
                 if (question == 0) {
                     saveData();
-                    ProjectsTableModel model = mainScreen.getModel();
-                    mainScreen.getModel().updateModel();
-                    mainScreen.getModel().fireTableDataChanged();
+                    ProjectsTableModel model = mainScreen.getProjectsTableModel();
+                    mainScreen.getProjectsTableModel().updateModel();
+                    mainScreen.getProjectsTableModel().fireTableDataChanged();
                     JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
                     setVisible(false);
                 }
