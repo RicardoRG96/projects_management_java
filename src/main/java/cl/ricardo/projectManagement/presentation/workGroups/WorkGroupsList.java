@@ -1,5 +1,6 @@
-package cl.ricardo.projectManagement.presentation;
+package cl.ricardo.projectManagement.presentation.workGroups;
 
+import cl.ricardo.projectManagement.presentation.workGroups.WorkGroupsTableModel;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 

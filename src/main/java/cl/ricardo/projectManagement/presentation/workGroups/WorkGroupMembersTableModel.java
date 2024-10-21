@@ -1,4 +1,4 @@
-package cl.ricardo.projectManagement.presentation;
+package cl.ricardo.projectManagement.presentation.workGroups;
 
 import javax.swing.table.AbstractTableModel;
 

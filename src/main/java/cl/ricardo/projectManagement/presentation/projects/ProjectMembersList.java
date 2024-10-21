@@ -1,9 +1,32 @@
-package cl.ricardo.projectManagement.presentation;
+package cl.ricardo.projectManagement.presentation.projects;
+
+import cl.ricardo.projectManagement.dataAccess.ProjectMember;
+import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
+import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 
 public class ProjectMembersList extends javax.swing.JFrame {
+    
+    private DAOManager manager;
+    
+    private ProjectMember member;
+    
+    private ProjectMembersTableModel model;
 
-    public ProjectMembersList() {
+    private int projectId;
+    
+    public ProjectMembersList(DAOManager manager, ProjectMember member, int projectId) throws DAOException {
         initComponents();
+        this.manager = manager;
+        this.member = member;
+        this.projectId = projectId;
+        this.model = new ProjectMembersTableModel(
+                manager.getProjectMemberDAO(), 
+                manager.getUserDAO(), 
+                manager.getProjectDAO()
+        );
+        this.model.updateModel(projectId);
+        this.projectMembersTable.setModel(model);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     @SuppressWarnings("unchecked")
@@ -13,7 +36,7 @@ public class ProjectMembersList extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        projectMembersTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -25,9 +48,9 @@ public class ProjectMembersList extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
         jLabel1.setText("Integrantes");
 
-        jTable1.setBackground(new java.awt.Color(245, 237, 237));
-        jTable1.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        projectMembersTable.setBackground(new java.awt.Color(245, 237, 237));
+        projectMembersTable.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        projectMembersTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -43,14 +66,14 @@ public class ProjectMembersList extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(50);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(50);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(30);
-            jTable1.getColumnModel().getColumn(4).setPreferredWidth(50);
+        projectMembersTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(projectMembersTable);
+        if (projectMembersTable.getColumnModel().getColumnCount() > 0) {
+            projectMembersTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+            projectMembersTable.getColumnModel().getColumn(1).setPreferredWidth(50);
+            projectMembersTable.getColumnModel().getColumn(2).setPreferredWidth(50);
+            projectMembersTable.getColumnModel().getColumn(3).setPreferredWidth(30);
+            projectMembersTable.getColumnModel().getColumn(4).setPreferredWidth(50);
         }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -90,19 +113,10 @@ public class ProjectMembersList extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ProjectMembersList().setVisible(true);
-            }
-        });
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable projectMembersTable;
     // End of variables declaration//GEN-END:variables
 }

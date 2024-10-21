@@ -20,6 +20,6 @@ public interface ProjectMemberDAO extends DAO<ProjectMember, Integer> {
     @Override
     ProjectMember getElement(int id) throws DAOException;
     
-    ProjectMember getMemberByUserId(int userId) throws DAOException;
+    List<ProjectMember> getMembersByProjectId(int projectId) throws DAOException;
     
 }

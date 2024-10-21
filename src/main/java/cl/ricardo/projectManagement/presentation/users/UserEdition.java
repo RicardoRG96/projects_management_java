@@ -1,4 +1,4 @@
-package cl.ricardo.projectManagement.presentation;
+package cl.ricardo.projectManagement.presentation.users;
 
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;

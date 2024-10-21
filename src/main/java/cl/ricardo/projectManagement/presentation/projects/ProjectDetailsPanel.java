@@ -1,10 +1,11 @@
-package cl.ricardo.projectManagement.presentation;
+package cl.ricardo.projectManagement.presentation.projects;
 
 import cl.ricardo.projectManagement.dataAccess.Project;
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.ProjectDAO;
+import cl.ricardo.projectManagement.presentation.MainScreen;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;

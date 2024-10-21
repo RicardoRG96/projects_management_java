@@ -1,10 +1,15 @@
 package cl.ricardo.projectManagement.presentation;
 
+import cl.ricardo.projectManagement.presentation.projects.ProjectsTableModel;
+import cl.ricardo.projectManagement.presentation.projects.ProjectDetailsPanel;
+import cl.ricardo.projectManagement.presentation.users.UsersList;
 import cl.ricardo.projectManagement.dataAccess.Project;
+import cl.ricardo.projectManagement.dataAccess.ProjectMember;
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.mysql.MySQLDaoManager;
+import cl.ricardo.projectManagement.presentation.projects.ProjectMembersList;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
@@ -24,15 +29,18 @@ public class MainScreen extends javax.swing.JFrame {
     
     private Project project;
     
+    private ProjectMember projectMember;
+    
     private ProjectsTableModel model;
 
-    public MainScreen(DAOManager manager, User user, Project project) throws DAOException {
+    public MainScreen(DAOManager manager, User user, Project project, ProjectMember projectMember) throws DAOException {
         initComponents();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         this.manager = manager;
         this.user = user;
         this.project = project;
+        this.projectMember = projectMember;
         this.model = new ProjectsTableModel(manager.getProjectDAO(), manager.getUserDAO());
         model.updateModel();
         projectsTable.setModel(model);
@@ -810,14 +818,28 @@ public class MainScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDeleteProjectMouseClicked
 
     private void btnSeeTeamsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSeeTeamsMouseClicked
+//        if (projectsTable.getSelectedRow() >= 0) {
+//            WorkGroupsList workGroupsList;
+//            try {
+//                int currentSelectedRow = projectsTable.getSelectedRow();
+//                int projectId = (int) projectsTable.getValueAt(currentSelectedRow, 0);
+//                workGroupsList = new WorkGroupsList(manager, projectId);
+//                workGroupsList.setVisible(true);
+//                workGroupsList.setLocationRelativeTo(null);
+//            } catch (DAOException ex) {
+//                System.out.println(ex.toString());
+//            }
+//        } else {
+//            JOptionPane.showMessageDialog(null, "Seleccione una fila");
+//        }
         if (projectsTable.getSelectedRow() >= 0) {
-            WorkGroupsList workGroupsList;
+            ProjectMembersList membersList;
             try {
                 int currentSelectedRow = projectsTable.getSelectedRow();
                 int projectId = (int) projectsTable.getValueAt(currentSelectedRow, 0);
-                workGroupsList = new WorkGroupsList(manager, projectId);
-                workGroupsList.setVisible(true);
-                workGroupsList.setLocationRelativeTo(null);
+                membersList = new ProjectMembersList(manager, projectMember, projectId);
+                membersList.setVisible(true);
+                membersList.setLocationRelativeTo(null);
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }
@@ -900,9 +922,10 @@ public class MainScreen extends javax.swing.JFrame {
         DAOManager manager = new MySQLDaoManager("localhost", "project_management_system", "root", "");
         User user = new User();
         Project project = new Project();
+        ProjectMember projectMember = new ProjectMember();
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new MainScreen(manager, user, project).setVisible(true);
+                new MainScreen(manager, user, project, projectMember).setVisible(true);
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }

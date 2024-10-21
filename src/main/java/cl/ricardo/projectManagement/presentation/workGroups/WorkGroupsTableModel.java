@@ -1,4 +1,4 @@
-package cl.ricardo.projectManagement.presentation;
+package cl.ricardo.projectManagement.presentation.workGroups;
 
 import cl.ricardo.projectManagement.dataAccess.WorkGroup;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
@@ -33,11 +33,6 @@ class WorkGroupsTableModel extends AbstractTableModel {
             case "BY_PROJECT":
                 data = workGroups.getGroupsByProject(projectId);
         }
-//        if (action.equals("ALL")) {
-//            data = workGroups.getAll();
-//        } else {
-//            
-//        }
     }
     
     @Override

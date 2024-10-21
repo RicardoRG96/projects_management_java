@@ -17,7 +17,7 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
     final String DELETE = "DELETE FROM project_members WHERE id = ?";
     final String GETALL = "SELECT * FROM project_members";
     final String GETONE = "SELECT * FROM project_members WHERE id = ?";
-    final String GET_ONE_BY_MEMBER_ID = "SELECT * FROM project_members WHERE user_id = ?";
+    final String GET_ONE_BY_PROJECT_ID = "SELECT * FROM project_members WHERE project_id = ?";
     
     private Connection conn;
     
@@ -97,11 +97,13 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
     }
     
     private ProjectMember convert(ResultSet resultSet) throws SQLException {
-        int projectId = resultSet.getInt("project_id");
-        int userId = resultSet.getInt("user_id");
         String role = resultSet.getString("role");
         ProjectMember member = new ProjectMember(role);
+        int projectId = resultSet.getInt("project_id");
+        int userId = resultSet.getInt("user_id");
         member.setId(resultSet.getInt("id"));
+        member.setProjectId(projectId);
+        member.setUserId(userId);
         member.setJoinedAt(resultSet.getDate("joined_at").toString());
         return member;
     }
@@ -174,18 +176,16 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
     }
 
     @Override
-    public ProjectMember getMemberByUserId(int userId) throws DAOException {
+    public List<ProjectMember> getMembersByProjectId(int projectId) throws DAOException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        ProjectMember member = null;
+        List<ProjectMember> members = new ArrayList<>();
         try {
-            statement = conn.prepareStatement(GET_ONE_BY_MEMBER_ID);
-            statement.setInt(1, userId);
+            statement = conn.prepareStatement(GET_ONE_BY_PROJECT_ID);
+            statement.setInt(1, projectId);
             resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                member = convert(resultSet);
-            } else {
-                throw new DAOException("No se ha encontrado el registro");
+            while (resultSet.next()) {
+                members.add(convert(resultSet));
             }
         } catch (SQLException ex) {
             throw new DAOException("Error en SQL", ex);
@@ -205,6 +205,6 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
                 }
             }
         }
-        return member;
+        return members;
     }
 }
