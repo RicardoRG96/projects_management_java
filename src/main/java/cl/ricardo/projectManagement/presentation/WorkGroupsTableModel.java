@@ -1,4 +1,3 @@
-
 package cl.ricardo.projectManagement.presentation;
 
 import cl.ricardo.projectManagement.dataAccess.WorkGroup;
@@ -25,11 +24,20 @@ class WorkGroupsTableModel extends AbstractTableModel {
         this.workGroups = workGroups;
         this.projects = projects;
         this.users = users;
-        updateModel();
     }
     
-    public void updateModel() throws DAOException {
-        data = workGroups.getAll();
+    public void updateModel(String action, int projectId) throws DAOException {
+        switch (action) {
+            case "ALL":
+                data = workGroups.getAll();
+            case "BY_PROJECT":
+                data = workGroups.getGroupsByProject(projectId);
+        }
+//        if (action.equals("ALL")) {
+//            data = workGroups.getAll();
+//        } else {
+//            
+//        }
     }
     
     @Override
@@ -62,7 +70,7 @@ class WorkGroupsTableModel extends AbstractTableModel {
         try {
             return switch (columnIndex) {
                 case 0 -> asked.getId();
-                case 1 -> users.getElement(projectId).getUserName();
+                case 1 -> projects.getElement(projectId).getName();
                 case 2 -> asked.getName();
                 case 3 -> users.getElement(leaderId).getUserName();
                 case 4 -> asked.getCreatedAt();

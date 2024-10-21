@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MySQLWorkGroupDAO implements WorkGroupDAO {
     
@@ -17,6 +19,7 @@ public class MySQLWorkGroupDAO implements WorkGroupDAO {
     final String DELETE = "DELETE FROM workgroups WHERE id = ?";
     final String GETALL = "SELECT * FROM workgroups";
     final String GETONE = "SELECT * FROM workgroups WHERE id = ?";
+    final String GET_ONE_BY_PROJECT_ID = "SELECT * FROM workgroups WHERE project_id = ?";
     
     private Connection conn;
     
@@ -170,6 +173,39 @@ public class MySQLWorkGroupDAO implements WorkGroupDAO {
             }
         }
         return workGroup;
+    }
+
+    @Override
+    public List<WorkGroup> getGroupsByProject(int projectId) throws DAOException {
+       PreparedStatement statement = null;
+       ResultSet resultSet = null;
+       List<WorkGroup> workGroupsList = new ArrayList<>();
+       try {
+           statement = conn.prepareStatement(GET_ONE_BY_PROJECT_ID);
+           statement.setInt(1, projectId);
+           resultSet = statement.executeQuery();
+           while (resultSet.next()) {
+               workGroupsList.add(convert(resultSet));
+           }
+       } catch (SQLException ex) {
+           throw new DAOException("Error en SQL", ex);
+       } finally {
+           if (statement != null) {
+               try {
+                   statement.close();
+               } catch (SQLException ex) {
+                   throw new DAOException("Error en SQL", ex);
+               }
+           }
+           if (resultSet != null) {
+               try {
+                   resultSet.close();
+               } catch (SQLException ex) {
+                   throw new DAOException("Error en SQL", ex);
+               }
+           }
+       }
+       return workGroupsList;
     }
     
 }

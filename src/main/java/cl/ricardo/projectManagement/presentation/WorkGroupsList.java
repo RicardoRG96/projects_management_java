@@ -11,11 +11,14 @@ public class WorkGroupsList extends javax.swing.JFrame {
     
     private WorkGroupsTableModel model;
     
-    public WorkGroupsList() throws DAOException {
+    public WorkGroupsList(DAOManager manager, int projectId) throws DAOException {
         initComponents();
+        this.manager = manager;
+        this.projectId = projectId;
         this.model = new WorkGroupsTableModel(manager.getWorkGroupDAO(), manager.getProjectDAO(), manager.getUserDAO());
-        model.updateModel();
+        model.updateModel("BY_PROJECT", projectId);
         workGroupsTable.setModel(model);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     @SuppressWarnings("unchecked")

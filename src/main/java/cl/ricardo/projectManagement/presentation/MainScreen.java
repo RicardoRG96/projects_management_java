@@ -543,6 +543,11 @@ public class MainScreen extends javax.swing.JFrame {
                 btnSeeTeamsMouseClicked(evt);
             }
         });
+        btnSeeTeams.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeeTeamsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -808,14 +813,22 @@ public class MainScreen extends javax.swing.JFrame {
         if (projectsTable.getSelectedRow() >= 0) {
             WorkGroupsList workGroupsList;
             try {
-                workGroupsList = new WorkGroupsList();
+                int currentSelectedRow = projectsTable.getSelectedRow();
+                int projectId = (int) projectsTable.getValueAt(currentSelectedRow, 0);
+                workGroupsList = new WorkGroupsList(manager, projectId);
                 workGroupsList.setVisible(true);
                 workGroupsList.setLocationRelativeTo(null);
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Seleccione una fila");
         }
     }//GEN-LAST:event_btnSeeTeamsMouseClicked
+
+    private void btnSeeTeamsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeeTeamsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSeeTeamsActionPerformed
     
     private void deleteProject() throws DAOException {
         int currentRow = projectsTable.getSelectedRow();
