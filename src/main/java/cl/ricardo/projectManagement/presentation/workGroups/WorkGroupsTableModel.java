@@ -19,8 +19,7 @@ public class WorkGroupsTableModel extends AbstractTableModel {
     
     private List<WorkGroup> data = new ArrayList<>();
     
-    public WorkGroupsTableModel(WorkGroupDAO workGroups, ProjectDAO projects, UserDAO users) 
-            throws DAOException {
+    public WorkGroupsTableModel(WorkGroupDAO workGroups, ProjectDAO projects, UserDAO users) {
         this.workGroups = workGroups;
         this.projects = projects;
         this.users = users;

@@ -9,4 +9,7 @@ public interface DAOManager {
     WorkGroupDAO getWorkGroupDAO();
     
     ProjectMemberDAO getProjectMemberDAO();
+    
+    WorkGroupMemberDAO getWorkGroupMemberDAO();
+    
 }

@@ -7,11 +7,13 @@ import cl.ricardo.projectManagement.dataAccess.Project;
 import cl.ricardo.projectManagement.dataAccess.ProjectMember;
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.WorkGroup;
+import cl.ricardo.projectManagement.dataAccess.WorkGroupMember;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.mysql.MySQLDaoManager;
 import cl.ricardo.projectManagement.presentation.projects.ProjectMembersList;
 import cl.ricardo.projectManagement.presentation.workGroups.WorkGroupDetailsPanel;
+import cl.ricardo.projectManagement.presentation.workGroups.WorkGroupsMembersList;
 import cl.ricardo.projectManagement.presentation.workGroups.WorkGroupsTableModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -34,6 +36,8 @@ public class MainScreen extends javax.swing.JFrame {
     private ProjectMember projectMember;
     
     private WorkGroup workGroup;
+    
+    private WorkGroupMember workGroupMember;
     
     private ProjectsTableModel projectsTableModel;
     
@@ -1172,7 +1176,19 @@ public class MainScreen extends javax.swing.JFrame {
 
     private void btnSeeMembersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSeeMembersMouseClicked
         if (workGroupsTable.getSelectedRow() >= 0) {
-            
+            WorkGroupsMembersList wgMembersList;
+            try {
+                int workGroupId = (int) workGroupsTable.getValueAt(workGroupsTable.getSelectedRow(), 0);
+                wgMembersList = new WorkGroupsMembersList(
+                        manager,
+                        workGroupMember,
+                        workGroupId
+                );
+                wgMembersList.setVisible(true);
+                wgMembersList.setLocationRelativeTo(null);
+            } catch (DAOException ex) {
+                System.out.println(ex.toString());
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Debe seleccionar una fila");
         }

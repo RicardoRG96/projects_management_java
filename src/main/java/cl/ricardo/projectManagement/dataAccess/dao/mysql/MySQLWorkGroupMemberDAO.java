@@ -1,9 +1,8 @@
 package cl.ricardo.projectManagement.dataAccess.dao.mysql;
 
-import cl.ricardo.projectManagement.dataAccess.Project;
-import cl.ricardo.projectManagement.dataAccess.ProjectMember;
+import cl.ricardo.projectManagement.dataAccess.WorkGroupMember;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
-import cl.ricardo.projectManagement.dataAccess.dao.ProjectMemberDAO;
+import cl.ricardo.projectManagement.dataAccess.dao.WorkGroupMemberDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,28 +10,28 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
-    final String INSERT = "INSERT INTO project_members (project_id, user_id, role) VALUES (?, ?, ?)";
-    final String UPDATE = "UPDATE project_members SET project_id = ?, user_id = ? WHERE id = ?";
-    final String DELETE = "DELETE FROM project_members WHERE id = ?";
-    final String GETALL = "SELECT * FROM project_members";
-    final String GETONE = "SELECT * FROM project_members WHERE id = ?";
-    final String GET_ONE_BY_PROJECT_ID = "SELECT * FROM project_members WHERE project_id = ?";
+public class MySQLWorkGroupMemberDAO implements WorkGroupMemberDAO {
+    
+    final String INSERT = "INSERT INTO workgroups_members (user_id, workgroup_id) VALUES (?, ?)";
+    final String UPDATE = "UPDATE workgroups_members SET user_id = ?, workgroup_id = ? WHERE id = ?";
+    final String DELETE = "DELETE FROM workgroups_members WHERE id = ?";
+    final String GETALL = "SELECT * FROM workgroups_members";
+    final String GETONE = "SELECT * FROM workgroups_members WHERE id = ?";
+    final String GET_ONE_BY_PROJECT_ID = "SELECT * FROM workgroups_members WHERE workgroup_id = ?";
     
     private Connection conn;
     
-    public MySQLProjectMemeberDAO(Connection conn) {
+    public MySQLWorkGroupMemberDAO(Connection conn) {
         this.conn = conn;
     }
 
     @Override
-    public void insert(ProjectMember member) throws DAOException {
-        PreparedStatement statement = null;
+    public void insert(WorkGroupMember wgMember) throws DAOException {
+       PreparedStatement statement = null;
         try {
             statement = conn.prepareStatement(INSERT);
-            statement.setInt(1, member.getProjectId());
-            statement.setInt(2, member.getUserId());
-            statement.setString(3, member.getRole());
+            statement.setInt(1, wgMember.getUserId());
+            statement.setInt(2, wgMember.getWorkGroupId());
             if (statement.executeUpdate() == 0) {
                 throw new DAOException("Posiblemente la información no fue guardada");
             }
@@ -50,13 +49,13 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
     }
 
     @Override
-    public void update(ProjectMember member) throws DAOException {
+    public void update(WorkGroupMember wgMember) throws DAOException {
         PreparedStatement statement = null;
         try {
             statement = conn.prepareStatement(UPDATE);
-            statement.setInt(1, member.getProjectId());
-            statement.setInt(2, member.getUserId());
-            statement.setInt(3, member.getId());
+            statement.setInt(1, wgMember.getUserId());
+            statement.setInt(2, wgMember.getWorkGroupId());
+            statement.setInt(3, wgMember.getId());
             if (statement.executeUpdate() == 0) {
                 throw new DAOException("Posiblemente la información no fue actualizada");
             }
@@ -95,28 +94,27 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
         }
     }
     
-    private ProjectMember convert(ResultSet resultSet) throws SQLException {
-        String role = resultSet.getString("role");
-        ProjectMember member = new ProjectMember(role);
-        int projectId = resultSet.getInt("project_id");
+    private WorkGroupMember convert(ResultSet resultSet) throws SQLException {
+        WorkGroupMember wgMember = new WorkGroupMember();
         int userId = resultSet.getInt("user_id");
-        member.setId(resultSet.getInt("id"));
-        member.setProjectId(projectId);
-        member.setUserId(userId);
-        member.setJoinedAt(resultSet.getDate("joined_at").toString());
-        return member;
+        int workGroupId = resultSet.getInt("workgroup_id");
+        wgMember.setId(resultSet.getInt("id"));
+        wgMember.setUserId(userId);
+        wgMember.setWorkGroupId(workGroupId);
+        wgMember.setJoinedAt(resultSet.getDate("joined_at").toString());
+        return wgMember;
     }
-
+    
     @Override
-    public List<ProjectMember> getAll() throws DAOException {
+    public List<WorkGroupMember> getAll() throws DAOException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        List<ProjectMember> projectMemberList = new ArrayList<>();
+        List<WorkGroupMember> workGroupMemberList = new ArrayList<>();
         try {
             statement = conn.prepareStatement(GETALL);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                projectMemberList.add(convert(resultSet));
+                workGroupMemberList.add(convert(resultSet));
             }
         } catch (SQLException ex) {
             throw new DAOException("Error en SQL", ex);
@@ -136,20 +134,20 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
                 }
             }
         }
-        return projectMemberList;
+        return workGroupMemberList;
     }
 
     @Override
-    public ProjectMember getElement(int id) throws DAOException {
+    public WorkGroupMember getElement(int id) throws DAOException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        ProjectMember member = null;
+        WorkGroupMember wgMember = null;
         try {
             statement = conn.prepareStatement(GETONE);
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                member = convert(resultSet);
+                wgMember = convert(resultSet);
             } else {
                 throw new DAOException("No se ha encontrado el registro");
             }
@@ -171,20 +169,20 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
                 }
             }
         }
-        return member;
+        return wgMember;
     }
 
     @Override
-    public List<ProjectMember> getMembersByProjectId(int projectId) throws DAOException {
+    public List<WorkGroupMember> getMembersByWorkGroupId(int workGroupId) throws DAOException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        List<ProjectMember> members = new ArrayList<>();
+        List<WorkGroupMember> wgMembers = new ArrayList<>();
         try {
             statement = conn.prepareStatement(GET_ONE_BY_PROJECT_ID);
-            statement.setInt(1, projectId);
+            statement.setInt(1, workGroupId);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                members.add(convert(resultSet));
+                wgMembers.add(convert(resultSet));
             }
         } catch (SQLException ex) {
             throw new DAOException("Error en SQL", ex);
@@ -204,7 +202,7 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
                 }
             }
         }
-        return members;
+        return wgMembers;
     }
     
 }
