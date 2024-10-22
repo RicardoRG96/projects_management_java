@@ -263,6 +263,7 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                     mainScreen.getWorkGroupsTableModel().updateModel();
                     mainScreen.getWorkGroupsTableModel().fireTableDataChanged();
                     JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
+                    mainScreen.loadTablesElementsCount();
                     setVisible(false);
                 }
             } catch (DAOException ex) {

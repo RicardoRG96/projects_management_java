@@ -190,6 +190,7 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
                     mainScreen.getProjectsTableModel().updateModel();
                     mainScreen.getProjectsTableModel().fireTableDataChanged();
                     JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
+                    mainScreen.loadTablesElementsCount();
                     setVisible(false);
                 }
             } catch (DAOException ex) {

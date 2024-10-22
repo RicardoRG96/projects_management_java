@@ -64,6 +64,7 @@ public class MainScreen extends javax.swing.JFrame {
         projectsTable.setModel(projectsTableModel);
         workGroupsTableModel.updateModel();
         workGroupsTable.setModel(workGroupsTableModel);
+        loadTablesElementsCount();
          addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -76,6 +77,7 @@ public class MainScreen extends javax.swing.JFrame {
         initComponents();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
+        loadTablesElementsCount();
         
          addWindowListener(new WindowAdapter() {
             @Override
@@ -130,6 +132,7 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
+        txtProjectsTableElementsCount = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
         btnAddWorkGroup = new javax.swing.JButton();
@@ -142,6 +145,7 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        txtWorkGroupsTableElementsCount = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
@@ -670,16 +674,14 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel12.setForeground(new java.awt.Color(51, 51, 51));
         jLabel12.setText("Ver integrantes");
 
+        txtProjectsTableElementsCount.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(179, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
@@ -692,6 +694,15 @@ public class MainScreen extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel12)))
                 .addGap(144, 144, 144))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(txtProjectsTableElementsCount, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -705,8 +716,10 @@ public class MainScreen extends javax.swing.JFrame {
                     .addComponent(jLabel11)
                     .addComponent(jLabel12))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtProjectsTableElementsCount, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab3", jPanel5);
@@ -852,15 +865,14 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel7.setForeground(new java.awt.Color(51, 51, 51));
         jLabel7.setText("Ver integrantes");
 
+        txtWorkGroupsTableElementsCount.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 576, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(170, 170, 170)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -873,7 +885,12 @@ public class MainScreen extends javax.swing.JFrame {
                                 .addComponent(jLabel6)
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel7))
-                            .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtWorkGroupsTableElementsCount, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 576, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
@@ -888,8 +905,10 @@ public class MainScreen extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtWorkGroupsTableElementsCount, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
         );
 
         jTabbedPane1.addTab("tab4", jPanel6);
@@ -1049,6 +1068,7 @@ public class MainScreen extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Eliminado con éxito");
                     projectsTableModel.updateModel();
                     projectsTableModel.fireTableDataChanged();
+                    loadTablesElementsCount();
                 }
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
@@ -1060,20 +1080,6 @@ public class MainScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDeleteProjectMouseClicked
 
     private void btnSeeTeamsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSeeTeamsMouseClicked
-//        if (projectsTable.getSelectedRow() >= 0) {
-//            WorkGroupsList workGroupsList;
-//            try {
-//                int currentSelectedRow = projectsTable.getSelectedRow();
-//                int projectId = (int) projectsTable.getValueAt(currentSelectedRow, 0);
-//                workGroupsList = new WorkGroupsList(manager, projectId);
-//                workGroupsList.setVisible(true);
-//                workGroupsList.setLocationRelativeTo(null);
-//            } catch (DAOException ex) {
-//                System.out.println(ex.toString());
-//            }
-//        } else {
-//            JOptionPane.showMessageDialog(null, "Seleccione una fila");
-//        }
         if (projectsTable.getSelectedRow() >= 0) {
             ProjectMembersList membersList;
             try {
@@ -1146,11 +1152,30 @@ public class MainScreen extends javax.swing.JFrame {
     }
     
     private void btnDeleteWorkGroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteWorkGroupMouseClicked
-        // TODO add your handling code here:
+        if (workGroupsTable.getSelectedRow() >= 0) {
+            try {
+                int question = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar?");
+                if (question == 0) {
+                    deleteWorkGroup();
+                    JOptionPane.showMessageDialog(null, "Eliminado con éxito");
+                    workGroupsTableModel.updateModel();
+                    workGroupsTableModel.fireTableDataChanged();
+                    loadTablesElementsCount();
+                }
+            } catch (DAOException ex) {
+                System.out.println(ex.toString());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una fila");
+        }
     }//GEN-LAST:event_btnDeleteWorkGroupMouseClicked
 
     private void btnSeeMembersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSeeMembersMouseClicked
-        // TODO add your handling code here:
+        if (workGroupsTable.getSelectedRow() >= 0) {
+            
+        } else {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una fila");
+        }
     }//GEN-LAST:event_btnSeeMembersMouseClicked
 
     private void btnSeeMembersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeeMembersActionPerformed
@@ -1158,9 +1183,15 @@ public class MainScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSeeMembersActionPerformed
     
     private void deleteProject() throws DAOException {
-        int currentRow = projectsTable.getSelectedRow();
-        int projectId = (int)projectsTable.getValueAt(currentRow, 0);
+        int selectedRow = projectsTable.getSelectedRow();
+        int projectId = (int)projectsTable.getValueAt(selectedRow, 0);
         manager.getProjectDAO().delete(projectId);
+    }
+    
+    private void deleteWorkGroup () throws DAOException {
+        int selectedRow = workGroupsTable.getSelectedRow();
+        int workGroupId = (int) workGroupsTable.getValueAt(selectedRow, 0);
+        manager.getWorkGroupDAO().delete(workGroupId);
     }
     
     private void handleClosing() {
@@ -1205,6 +1236,15 @@ public class MainScreen extends javax.swing.JFrame {
         // checks if there's still something unsaved
         // this method always return true for demo purpose
         return true;
+    }
+    
+    public void loadTablesElementsCount() {
+        txtProjectsTableElementsCount.setText(
+                String.valueOf(projectsTable.getRowCount()) + " Registros"
+        );
+        txtWorkGroupsTableElementsCount.setText(
+                String.valueOf(workGroupsTable.getRowCount()) + " Registros"
+        );
     }
 
     public JTable getProjectsTable() {
@@ -1310,6 +1350,8 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JPanel tasksTab;
     private javax.swing.JLabel txtCurrentUser;
     private javax.swing.JLabel txtCurrentUserRole;
+    private javax.swing.JLabel txtProjectsTableElementsCount;
+    private javax.swing.JLabel txtWorkGroupsTableElementsCount;
     private javax.swing.JPanel usersTab;
     private javax.swing.JPanel workGroupsTab;
     private javax.swing.JTable workGroupsTable;
