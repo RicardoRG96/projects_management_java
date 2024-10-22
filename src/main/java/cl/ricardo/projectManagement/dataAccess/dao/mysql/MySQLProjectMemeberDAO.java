@@ -1,6 +1,5 @@
 package cl.ricardo.projectManagement.dataAccess.dao.mysql;
 
-import cl.ricardo.projectManagement.dataAccess.Project;
 import cl.ricardo.projectManagement.dataAccess.ProjectMember;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.ProjectMemberDAO;

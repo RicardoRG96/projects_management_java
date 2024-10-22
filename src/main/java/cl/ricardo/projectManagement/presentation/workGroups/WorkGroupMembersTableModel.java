@@ -64,7 +64,7 @@ public class WorkGroupMembersTableModel extends AbstractTableModel {
                 case 0 -> asked.getId();
                 case 1 -> users.getElement(userId).getUserName();
                 case 2 -> workGroups.getElement(workGroupId).getName();
-                case 3 -> "FECHA INTEGRACION";
+                case 3 -> asked.getJoinedAt();
                 default -> "";
             };
         } catch (DAOException ex) {

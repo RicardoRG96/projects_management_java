@@ -21,4 +21,7 @@ public interface WorkGroupDAO extends DAO<WorkGroup, Integer> {
     WorkGroup getElement(int id) throws DAOException;
     
     List<WorkGroup> getGroupsByProject(int projectId) throws DAOException;
+    
+    int getWorkGroupIdByName(String workGroupName) throws DAOException;
+    
 }

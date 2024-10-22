@@ -12,7 +12,6 @@ import cl.ricardo.projectManagement.presentation.MainScreen;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 
 public class WorkGroupDetailsPanel extends javax.swing.JFrame {
     
@@ -42,13 +41,6 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                 txtWorkGroupName.setText("");
                 cbxLeader.setSelectedItem(null);
             } else if (this.action.equals("MODIFY")) {
-//                JTable workGroupsTable = mainScreen.getWorkGroupsTable();
-//                int selectedRow = workGroupsTable.getSelectedRow();
-//                int projectId = (int) workGroupsTable.getValueAt(selectedRow, 1);
-//                int leaderId = (int) workGroupsTable.getValueAt(selectedRow, 3);
-//                Object projectName = (Object) manager.getProjectDAO().getElement(projectId).getName();
-//                Object leaderName = (Object) manager.getUserDAO().getElement(leaderId).getUserName();
-//                String workGroupName = workGroupsTable.getValueAt(selectedRow, 2).toString();
                 ProjectDAO projectDao = manager.getProjectDAO();
                 UserDAO userDao = manager.getUserDAO();
                 String projectName = projectDao.getElement(workGroup.getProjectId()).getName();
