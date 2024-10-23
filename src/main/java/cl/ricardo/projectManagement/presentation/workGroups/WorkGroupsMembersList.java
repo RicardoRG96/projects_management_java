@@ -15,15 +15,19 @@ public class WorkGroupsMembersList extends javax.swing.JFrame {
     
     private int workGroupId;
 
+    private int projectId;
+    
     public WorkGroupsMembersList(
             DAOManager manager, 
             WorkGroupMember workGroupMember, 
-            int workGroupId
+            int workGroupId,
+            int projectId
     ) throws DAOException {
         initComponents();
         this.manager = manager;
         this.workGroupMember = workGroupMember;
         this.workGroupId = workGroupId;
+        this.projectId = projectId;
         this.wgMembersTableModel = new WorkGroupMembersTableModel(
             manager.getWorkGroupMemberDAO(),
             manager.getWorkGroupDAO(),
@@ -222,7 +226,8 @@ public class WorkGroupsMembersList extends javax.swing.JFrame {
                     manager, 
                     workGroupMember, 
                     wgMembersTableModel,
-                    workGroupId
+                    workGroupId,
+                    projectId
             );
             workGroupMembersDetailsPanel.setVisible(true);
             workGroupMembersDetailsPanel.setLocationRelativeTo(null);
@@ -243,6 +248,7 @@ public class WorkGroupsMembersList extends javax.swing.JFrame {
                     int selectedRow = workGroupsMembersTable.getSelectedRow();
                     int workGroupMemberId = (int) workGroupsMembersTable.getValueAt(selectedRow, 0);
                     manager.getWorkGroupMemberDAO().delete(workGroupMemberId);
+                    updateProjectMembers();
                     JOptionPane.showMessageDialog(null, "Eliminado con éxito");
                     wgMembersTableModel.updateModel(workGroupId);
                     wgMembersTableModel.fireTableDataChanged();
@@ -255,6 +261,13 @@ public class WorkGroupsMembersList extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDeleteProjectMouseClicked
 
+    private void updateProjectMembers() throws DAOException {
+        int selectedRow = workGroupsMembersTable.getSelectedRow();
+        String userName = workGroupsMembersTable.getValueAt(selectedRow, 1).toString();
+        int userId = manager.getUserDAO().getUserIdByUserName(userName);
+        manager.getProjectMemberDAO().deleteByUserIdAndProjectId(userId, projectId);
+    }
+    
     private void loadTablesElementsCount() {
         txtWorkGroupMembersTableElementsCount.setText(
             String.valueOf(workGroupsMembersTable.getRowCount()) + " Registros"

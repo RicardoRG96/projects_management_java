@@ -17,6 +17,8 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
     final String GETALL = "SELECT * FROM project_members";
     final String GETONE = "SELECT * FROM project_members WHERE id = ?";
     final String GET_ONE_BY_PROJECT_ID = "SELECT * FROM project_members WHERE project_id = ?";
+    final String DELETE_BY_USER_ID_AND_PROJECT_ID = 
+            "DELETE FROM project_members WHERE user_id = ? AND project_id = ?";
     
     private Connection conn;
     
@@ -204,6 +206,29 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
             }
         }
         return members;
+    }
+
+    @Override
+    public void deleteByUserIdAndProjectId(int userId, int projectId) throws DAOException {
+        PreparedStatement statement = null;
+        try {
+            statement = conn.prepareStatement(DELETE_BY_USER_ID_AND_PROJECT_ID);
+            statement.setInt(1, userId);
+            statement.setInt(2, projectId);
+            if (statement.executeUpdate() == 0) {
+                throw new DAOException("Posiblemente no se eliminó el registro");
+            } 
+        } catch (SQLException ex) {
+            throw new DAOException("Error en SQL", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+        }
     }
     
 }

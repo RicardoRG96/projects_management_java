@@ -1180,11 +1180,17 @@ public class MainScreen extends javax.swing.JFrame {
         if (workGroupsTable.getSelectedRow() >= 0) {
             WorkGroupsMembersList wgMembersList;
             try {
-                int workGroupId = (int) workGroupsTable.getValueAt(workGroupsTable.getSelectedRow(), 0);
+                int selectedRow = workGroupsTable.getSelectedRow();
+                int workGroupId = (int) workGroupsTable.getValueAt(selectedRow, 0);
+                String projectName = workGroupsTable.getValueAt(selectedRow, 1).toString();
+                int projectId = manager
+                        .getProjectDAO()
+                        .getProjectIdByProjectName(projectName);
                 wgMembersList = new WorkGroupsMembersList(
                         manager,
                         workGroupMember,
-                        workGroupId
+                        workGroupId,
+                        projectId
                 );
                 wgMembersList.setVisible(true);
                 wgMembersList.setLocationRelativeTo(null);

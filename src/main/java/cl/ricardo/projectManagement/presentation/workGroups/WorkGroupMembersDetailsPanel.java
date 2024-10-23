@@ -1,5 +1,6 @@
 package cl.ricardo.projectManagement.presentation.workGroups;
 
+import cl.ricardo.projectManagement.dataAccess.ProjectMember;
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.WorkGroupMember;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
@@ -17,18 +18,22 @@ public class WorkGroupMembersDetailsPanel extends javax.swing.JFrame {
     private WorkGroupMembersTableModel wgMembersTableModel;
     
     private int workGroupId;
+    
+    private int projectId;
 
     public WorkGroupMembersDetailsPanel(
             DAOManager manager, 
             WorkGroupMember workGroupMember, 
             WorkGroupMembersTableModel wgMembersTableModel,
-            int workGroupId
+            int workGroupId,
+            int projectId
     ) throws DAOException {
         initComponents();
         this.manager = manager;
         this.workGroupMember = workGroupMember;
         this.wgMembersTableModel = wgMembersTableModel;
         this.workGroupId = workGroupId;
+        this.projectId = projectId;
         this.listAllUsers();
         this.listGroupName();
         this.loadData();
@@ -64,6 +69,19 @@ public class WorkGroupMembersDetailsPanel extends javax.swing.JFrame {
         workGroupMember.setUserId(userId);
         workGroupMember.setWorkGroupId(workGroupId);
         manager.getWorkGroupMemberDAO().insert(workGroupMember);
+    }
+    
+    private void updateProjectMembers() throws DAOException {
+        String userName = cbxMemberName.getSelectedItem().toString();
+        int userId = manager.getUserDAO().getUserIdByUserName(userName);
+        String userRole = manager
+                .getUserDAO()
+                .getElement(userId)
+                .getRole();
+        ProjectMember projectMember = new ProjectMember(userRole);
+        projectMember.setUserId(userId);
+        projectMember.setProjectId(projectId);
+        manager.getProjectMemberDAO().insert(projectMember);
     }
     
     @SuppressWarnings("unchecked")
@@ -202,6 +220,7 @@ public class WorkGroupMembersDetailsPanel extends javax.swing.JFrame {
                     "¿Está seguro que los datos están correctos?");
                 if (question == 0) {
                     saveData();
+                    updateProjectMembers();
                     wgMembersTableModel.updateModel(workGroupId);
                     wgMembersTableModel.fireTableDataChanged();
                     JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
