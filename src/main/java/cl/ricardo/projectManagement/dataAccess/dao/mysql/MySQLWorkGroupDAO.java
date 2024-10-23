@@ -19,6 +19,7 @@ public class MySQLWorkGroupDAO implements WorkGroupDAO {
     final String GETONE = "SELECT * FROM workgroups WHERE id = ?";
     final String GET_ONE_BY_PROJECT_ID = "SELECT * FROM workgroups WHERE project_id = ?";
     final String GET_ID_BY_NAME = "SELECT id FROM workgroups WHERE name = ?";
+    final String DELETE_BY_PROJECT_ID = "DELETE FROM workgroups WHERE project_id = ?";
     
     private Connection conn;
     
@@ -85,13 +86,36 @@ public class MySQLWorkGroupDAO implements WorkGroupDAO {
                 throw new DAOException("Posiblemente el registro no se eliminó");
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error en SQL", ex);
+            throw new DAOException("Error en SQL aqui", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    throw new DAOException("Error en SQL", ex);
+                    throw new DAOException("Error en SQL cerrar statement", ex);
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void deleteByProjectId(int projectId) throws DAOException {
+        PreparedStatement statement = null;
+        try {
+            statement = conn.prepareStatement(DELETE_BY_PROJECT_ID);
+            statement.setInt(1, projectId);
+            if (statement.executeUpdate() == 0) {
+                throw new DAOException("Posiblemente el registro no se eliminó");
+            }
+        } catch (SQLException ex) {
+//            throw new DAOException("Error en SQL aqui", ex);
+            System.out.println(ex.toString());
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL cerrar statement", ex);
                 }
             }
         }

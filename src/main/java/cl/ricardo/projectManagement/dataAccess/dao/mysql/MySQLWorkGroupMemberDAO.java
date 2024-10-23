@@ -18,6 +18,7 @@ public class MySQLWorkGroupMemberDAO implements WorkGroupMemberDAO {
     final String GETALL = "SELECT * FROM workgroups_members";
     final String GETONE = "SELECT * FROM workgroups_members WHERE id = ?";
     final String GET_ONE_BY_PROJECT_ID = "SELECT * FROM workgroups_members WHERE workgroup_id = ?";
+    final String DELETE_BY_WORKGROUP_ID = "DELETE FROM workgroups_members WHERE workgroup_id = ?";
     
     private Connection conn;
     
@@ -78,6 +79,28 @@ public class MySQLWorkGroupMemberDAO implements WorkGroupMemberDAO {
         try {
             statement = conn.prepareStatement(DELETE);
             statement.setInt(1, id);
+           if (statement.executeUpdate() == 0) {
+               throw new DAOException("Posiblemente el elemento no fue eliminado");
+           }
+        } catch (SQLException ex) {
+            throw new DAOException("Error en SQL", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void deleteByWorkGroupId(int workGroupId) throws DAOException {
+        PreparedStatement statement = null;
+        try {
+            statement = conn.prepareStatement(DELETE_BY_WORKGROUP_ID);
+            statement.setInt(1, workGroupId);
            if (statement.executeUpdate() == 0) {
                throw new DAOException("Posiblemente el elemento no fue eliminado");
            }
@@ -185,20 +208,20 @@ public class MySQLWorkGroupMemberDAO implements WorkGroupMemberDAO {
                 wgMembers.add(convert(resultSet));
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error en SQL", ex);
+            throw new DAOException("Error en SQL aqui", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    throw new DAOException("Error en SQL", ex);
+                    throw new DAOException("Error en SQL cerrar statement", ex);
                 }
             }
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    throw new DAOException("Error en SQL", ex);
+                    throw new DAOException("Error en SQL cerrar resultSet", ex);
                 }
             }
         }

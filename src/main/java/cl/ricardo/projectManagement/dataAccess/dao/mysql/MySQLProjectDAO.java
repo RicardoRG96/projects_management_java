@@ -85,7 +85,8 @@ public class MySQLProjectDAO implements ProjectDAO {
                throw new DAOException("Posiblemente el elemento no fue eliminado");
            }
         } catch (SQLException ex) {
-            throw new DAOException("Error en SQL", ex);
+//            throw new DAOException("Error en SQL", ex);
+            System.out.println(ex.toString());
         } finally {
             if (statement != null) {
                 try {
@@ -195,14 +196,14 @@ public class MySQLProjectDAO implements ProjectDAO {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    throw new DAOException("Error en SQL", ex);
+                    throw new DAOException("Error en SQL cerrar statement", ex);
                 }
             }
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    throw new DAOException("Error en SQL", ex);
+                    throw new DAOException("Error en SQL cerrar resultSet", ex);
                 }
             }
         }
