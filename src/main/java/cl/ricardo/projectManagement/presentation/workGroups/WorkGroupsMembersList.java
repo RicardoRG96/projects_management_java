@@ -243,6 +243,9 @@ public class WorkGroupsMembersList extends javax.swing.JFrame {
                     int selectedRow = workGroupsMembersTable.getSelectedRow();
                     int workGroupMemberId = (int) workGroupsMembersTable.getValueAt(selectedRow, 0);
                     manager.getWorkGroupMemberDAO().delete(workGroupMemberId);
+                    JOptionPane.showMessageDialog(null, "Eliminado con éxito");
+                    wgMembersTableModel.updateModel(workGroupId);
+                    wgMembersTableModel.fireTableDataChanged();
                 }
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
@@ -252,7 +255,7 @@ public class WorkGroupsMembersList extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDeleteProjectMouseClicked
 
-    public void loadTablesElementsCount() {
+    private void loadTablesElementsCount() {
         txtWorkGroupMembersTableElementsCount.setText(
             String.valueOf(workGroupsMembersTable.getRowCount()) + " Registros"
         );

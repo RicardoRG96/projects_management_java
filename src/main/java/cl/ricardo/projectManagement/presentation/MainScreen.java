@@ -48,7 +48,8 @@ public class MainScreen extends javax.swing.JFrame {
             User user, 
             Project project, 
             ProjectMember projectMember,
-            WorkGroup workGroup
+            WorkGroup workGroup,
+            WorkGroupMember workGroupMember
     ) throws DAOException {
         initComponents();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -58,6 +59,7 @@ public class MainScreen extends javax.swing.JFrame {
         this.project = project;
         this.projectMember = projectMember;
         this.workGroup = workGroup;
+        this.workGroupMember = workGroupMember;
         this.projectsTableModel = new ProjectsTableModel(manager.getProjectDAO(), manager.getUserDAO());
         this.workGroupsTableModel = new WorkGroupsTableModel(
                 manager.getWorkGroupDAO(), 
@@ -1303,9 +1305,16 @@ public class MainScreen extends javax.swing.JFrame {
         Project project = new Project();
         ProjectMember projectMember = new ProjectMember();
         WorkGroup workGroup = new WorkGroup();
+        WorkGroupMember workGroupMember = new WorkGroupMember();
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new MainScreen(manager, user, project, projectMember, workGroup).setVisible(true);
+                new MainScreen(
+                        manager, 
+                        user, 
+                        project, 
+                        projectMember, 
+                        workGroup, 
+                        workGroupMember).setVisible(true);
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }
