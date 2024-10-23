@@ -1072,12 +1072,18 @@ public class MainScreen extends javax.swing.JFrame {
                 int question =JOptionPane.showConfirmDialog(null, 
                                 "¿Está seguro que desea eliminar el elemento seleccionado?");
                 if (question == 0) {
-                    deleteProjectMembers();
-                    deleteWorkGroupInAProject();
-                    deleteProject();
+                    if (workGroupsTable.getRowCount() <= 0) {
+                        deleteProject();
+                    } else {
+                        deleteProjectMembers();
+                        deleteWorkGroupInAProject();
+                        deleteProject();
+                    }
                     JOptionPane.showMessageDialog(null, "Eliminado con éxito");
                     projectsTableModel.updateModel();
                     projectsTableModel.fireTableDataChanged();
+                    workGroupsTableModel.updateModel(); 
+                    workGroupsTableModel.fireTableDataChanged();
                     loadTablesElementsCount();
                 }
             } catch (DAOException ex) {
