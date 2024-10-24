@@ -1067,12 +1067,26 @@ public class MainScreen extends javax.swing.JFrame {
     }
     
     private void btnDeleteProjectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteProjectMouseClicked
-        if (projectsTable.getSelectedRow() >= 0) {
+        int selectedRow = projectsTable.getSelectedRow();
+        if (selectedRow >= 0) {
             try {
                 int question =JOptionPane.showConfirmDialog(null, 
                                 "¿Está seguro que desea eliminar el elemento seleccionado?");
                 if (question == 0) {
-                    if (workGroupsTable.getRowCount() <= 0) {
+                    int projectId = Integer.parseInt(projectsTable.getValueAt(selectedRow, 0).toString());
+                    List<ProjectMember> projectMembers = manager
+                            .getProjectMemberDAO()
+                            .getMembersByProjectId(projectId);
+                    List<WorkGroup> wgMembers = manager
+                            .getWorkGroupDAO()
+                            .getGroupsByProject(projectId);
+                    if (projectMembers.isEmpty() && wgMembers.isEmpty()) {
+                        deleteProject();
+                    } else if (!projectMembers.isEmpty() && wgMembers.isEmpty()) {
+                        deleteProjectMembers();
+                        deleteProject();
+                    } else if (projectMembers.isEmpty() && !wgMembers.isEmpty()) {
+                        deleteWorkGroupInAProject();
                         deleteProject();
                     } else {
                         deleteProjectMembers();
@@ -1186,13 +1200,33 @@ public class MainScreen extends javax.swing.JFrame {
     }
     
     private void btnDeleteWorkGroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteWorkGroupMouseClicked
-        if (workGroupsTable.getSelectedRow() >= 0) {
+        int selectedRow = workGroupsTable.getSelectedRow();
+        if (selectedRow >= 0) {
             try {
                 int question = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar?");
                 if (question == 0) {
-                    deleteWorkGroupMembersInProjectMembers();
-                    deleteWorkGroupMembers();
-                    deleteWorkGroup();
+                    String projectName = workGroupsTable.getValueAt(selectedRow, 1).toString();
+                    int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
+                    int workGroupId = Integer.parseInt(workGroupsTable.getValueAt(selectedRow, 0).toString());
+                    List<ProjectMember> projectMembers = manager
+                            .getProjectMemberDAO()
+                            .getMembersByProjectId(projectId);
+                    List<WorkGroupMember> wgMembers = manager
+                            .getWorkGroupMemberDAO()
+                            .getMembersByWorkGroupId(workGroupId);
+                    if (projectMembers.isEmpty() && wgMembers.isEmpty()) {
+                        deleteWorkGroup();
+                    } else if (!projectMembers.isEmpty() && wgMembers.isEmpty()) {
+                        deleteWorkGroupMembersInProjectMembers();
+                        deleteWorkGroup();
+                    } else if (projectMembers.isEmpty() && !wgMembers.isEmpty()) {
+                        deleteWorkGroupMembers();
+                        deleteWorkGroup();
+                    } else {
+                        deleteWorkGroupMembersInProjectMembers();
+                        deleteWorkGroupMembers();
+                        deleteWorkGroup();
+                    }
                     JOptionPane.showMessageDialog(null, "Eliminado con éxito");
                     workGroupsTableModel.updateModel();
                     workGroupsTableModel.fireTableDataChanged();
@@ -1219,14 +1253,8 @@ public class MainScreen extends javax.swing.JFrame {
                 .collect(Collectors.toList());
       
         for (Integer userId : usersId) {
-//            System.out.println(userId);
             manager.getProjectMemberDAO().deleteByUserIdAndProjectId(userId, projectId);
         }
-//        System.out.println(selectedRow);
-//        System.out.println(projectName);
-//        System.out.println(projectId);
-//        System.out.println(workGroupId);
-//        System.out.println(usersId);
     }
     
     private void deleteWorkGroupMembers() throws DAOException {

@@ -165,6 +165,9 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnSaveMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnSaveMouseEntered(evt);
+            }
         });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -251,12 +254,31 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                 int question = JOptionPane.showConfirmDialog(null,
                     "¿Está seguro que los datos están correctos?");
                 if (question == 0) {
-                    saveData();
-                    mainScreen.getWorkGroupsTableModel().updateModel();
-                    mainScreen.getWorkGroupsTableModel().fireTableDataChanged();
-                    JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
-                    mainScreen.loadTablesElementsCount();
-                    setVisible(false);
+                    String workGroupName = txtWorkGroupName.getText();
+                    String projectName = cbxProject.getSelectedItem().toString();
+                    int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
+                    List<WorkGroup> workGroups = manager
+                            .getWorkGroupDAO()
+                            .getGroupsByNameAndProjectId(workGroupName, projectId);
+                    if (workGroups.isEmpty()) {
+                        saveData();
+                        mainScreen.getWorkGroupsTableModel().updateModel();
+                        mainScreen.getWorkGroupsTableModel().fireTableDataChanged();
+                        JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
+                        mainScreen.loadTablesElementsCount();
+                        setVisible(false);
+                    } else {
+                        int confirmation = JOptionPane.showConfirmDialog(null, 
+                                "Este nombre de equipo ya existe en el proyecto seleccionado, ¿Está seguro que desea guardar?");
+                        if (confirmation == 0) {
+                            saveData();
+                            mainScreen.getWorkGroupsTableModel().updateModel();
+                            mainScreen.getWorkGroupsTableModel().fireTableDataChanged();
+                            JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
+                            mainScreen.loadTablesElementsCount();
+                            setVisible(false);
+                        }
+                    }
                 }
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
@@ -265,6 +287,10 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Debe rellenar todos los campos");
         }
     }//GEN-LAST:event_btnSaveMouseClicked
+
+    private void btnSaveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSaveMouseEntered
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;

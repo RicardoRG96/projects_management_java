@@ -26,4 +26,6 @@ public interface WorkGroupDAO extends DAO<WorkGroup, Integer> {
     
     void deleteByProjectId(int projectId) throws DAOException;
     
+    List<WorkGroup> getGroupsByNameAndProjectId(String name, int projectId) throws DAOException;
+    
 }

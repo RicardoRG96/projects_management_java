@@ -22,4 +22,6 @@ public interface ProjectDAO extends DAO<Project, Integer> {
     
     int getProjectIdByProjectName(String projectName) throws DAOException;
     
+    List<Project> getProjectsByName(String projectName) throws DAOException;
+    
 }

@@ -20,6 +20,7 @@ public class MySQLWorkGroupDAO implements WorkGroupDAO {
     final String GET_ONE_BY_PROJECT_ID = "SELECT * FROM workgroups WHERE project_id = ?";
     final String GET_ID_BY_NAME = "SELECT id FROM workgroups WHERE name = ?";
     final String DELETE_BY_PROJECT_ID = "DELETE FROM workgroups WHERE project_id = ?";
+    final String GET_BY_NAME_AND_PROJECT_ID = "SELECT * FROM workgroups WHERE name = ? AND project_id = ?";
     
     private Connection conn;
     
@@ -266,6 +267,40 @@ public class MySQLWorkGroupDAO implements WorkGroupDAO {
             }
         }
         return workGroupId;
+    }
+    
+    @Override
+    public List<WorkGroup> getGroupsByNameAndProjectId(String name, int projectId) throws DAOException {
+       PreparedStatement statement = null;
+       ResultSet resultSet = null;
+       List<WorkGroup> workGroupsList = new ArrayList<>();
+       try {
+           statement = conn.prepareStatement(GET_BY_NAME_AND_PROJECT_ID);
+           statement.setString(1, name);
+           statement.setInt(2, projectId);
+           resultSet = statement.executeQuery();
+           while (resultSet.next()) {
+               workGroupsList.add(convert(resultSet));
+           }
+       } catch (SQLException ex) {
+           throw new DAOException("Error en SQL", ex);
+       } finally {
+           if (statement != null) {
+               try {
+                   statement.close();
+               } catch (SQLException ex) {
+                   throw new DAOException("Error en SQL", ex);
+               }
+           }
+           if (resultSet != null) {
+               try {
+                   resultSet.close();
+               } catch (SQLException ex) {
+                   throw new DAOException("Error en SQL", ex);
+               }
+           }
+       }
+       return workGroupsList;
     }
     
 }

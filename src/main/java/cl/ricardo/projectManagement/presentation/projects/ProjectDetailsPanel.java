@@ -185,13 +185,29 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
                 int question = JOptionPane.showConfirmDialog(null, 
                                 "¿Está seguro que los datos están correctos?");
                 if (question == 0) {
-                    saveData();
-                    ProjectsTableModel model = mainScreen.getProjectsTableModel();
-                    mainScreen.getProjectsTableModel().updateModel();
-                    mainScreen.getProjectsTableModel().fireTableDataChanged();
-                    JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
-                    mainScreen.loadTablesElementsCount();
-                    setVisible(false);
+                    String projectName = txtName.getText();
+                    List<Project> projects = manager.getProjectDAO().getProjectsByName(projectName);
+                    if (projects.isEmpty()) {
+                        saveData();
+                        ProjectsTableModel model = mainScreen.getProjectsTableModel();
+                        mainScreen.getProjectsTableModel().updateModel();
+                        mainScreen.getProjectsTableModel().fireTableDataChanged();
+                        JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
+                        mainScreen.loadTablesElementsCount();
+                        setVisible(false);
+                    } else {
+                        int confirm = JOptionPane.showConfirmDialog(null, 
+                                "Este nombre de proyecto ya existe, ¿está seguro que desea guardar?");
+                        if (confirm == 0) {
+                            saveData();
+                            ProjectsTableModel model = mainScreen.getProjectsTableModel();
+                            mainScreen.getProjectsTableModel().updateModel();
+                            mainScreen.getProjectsTableModel().fireTableDataChanged();
+                            JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
+                            mainScreen.loadTablesElementsCount();
+                            setVisible(false);
+                        }
+                    }
                 }
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
