@@ -1,8 +1,10 @@
 package cl.ricardo.projectManagement.presentation.workGroups;
 
 import cl.ricardo.projectManagement.dataAccess.Project;
+import cl.ricardo.projectManagement.dataAccess.ProjectMember;
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.WorkGroup;
+import cl.ricardo.projectManagement.dataAccess.WorkGroupMember;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.ProjectDAO;
@@ -262,6 +264,8 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                             .getGroupsByNameAndProjectId(workGroupName, projectId);
                     if (workGroups.isEmpty()) {
                         saveData();
+                        addWorkGroupLeaderToWorkGroupMembers(workGroupName);
+                        addWorkGroupLeaderToProjectsMembers();
                         mainScreen.getWorkGroupsTableModel().updateModel();
                         mainScreen.getWorkGroupsTableModel().fireTableDataChanged();
                         JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
@@ -272,6 +276,8 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                                 "Este nombre de equipo ya existe en el proyecto seleccionado, ¿Está seguro que desea guardar?");
                         if (confirmation == 0) {
                             saveData();
+                            addWorkGroupLeaderToWorkGroupMembers(workGroupName);
+                            addWorkGroupLeaderToProjectsMembers();
                             mainScreen.getWorkGroupsTableModel().updateModel();
                             mainScreen.getWorkGroupsTableModel().fireTableDataChanged();
                             JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
@@ -288,6 +294,30 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSaveMouseClicked
 
+    private void addWorkGroupLeaderToWorkGroupMembers(String workGroupName) throws DAOException {
+        String leaderName = cbxLeader.getSelectedItem().toString();
+        int leaderId = manager.getUserDAO().getUserIdByUserName(leaderName);
+        int workGroupId = manager.getWorkGroupDAO().getWorkGroupIdByName(workGroupName);
+        
+        WorkGroupMember member = new WorkGroupMember();
+        member.setUserId(leaderId);
+        member.setWorkGroupId(workGroupId);
+        manager.getWorkGroupMemberDAO().insert(member);
+    }
+    
+    private void addWorkGroupLeaderToProjectsMembers() throws DAOException {
+        String projectName = cbxProject.getSelectedItem().toString();
+        String leaderName = cbxLeader.getSelectedItem().toString();
+        int leaderId = manager.getUserDAO().getUserIdByUserName(leaderName);
+        int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
+        String leaderRole = manager.getUserDAO().getElement(leaderId).getRole();
+        
+        ProjectMember member = new ProjectMember(leaderRole);
+        member.setUserId(leaderId);
+        member.setProjectId(projectId);
+        manager.getProjectMemberDAO().insert(member);
+    }
+    
     private void btnSaveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseEntered
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSaveMouseEntered

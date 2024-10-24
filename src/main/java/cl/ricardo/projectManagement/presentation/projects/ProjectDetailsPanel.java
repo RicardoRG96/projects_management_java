@@ -1,6 +1,7 @@
 package cl.ricardo.projectManagement.presentation.projects;
 
 import cl.ricardo.projectManagement.dataAccess.Project;
+import cl.ricardo.projectManagement.dataAccess.ProjectMember;
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
@@ -189,7 +190,7 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
                     List<Project> projects = manager.getProjectDAO().getProjectsByName(projectName);
                     if (projects.isEmpty()) {
                         saveData();
-                        ProjectsTableModel model = mainScreen.getProjectsTableModel();
+                        addProjectOwnerToProjectsMembers(projectName);
                         mainScreen.getProjectsTableModel().updateModel();
                         mainScreen.getProjectsTableModel().fireTableDataChanged();
                         JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
@@ -200,7 +201,7 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
                                 "Este nombre de proyecto ya existe, ¿está seguro que desea guardar?");
                         if (confirm == 0) {
                             saveData();
-                            ProjectsTableModel model = mainScreen.getProjectsTableModel();
+                            addProjectOwnerToProjectsMembers(projectName);
                             mainScreen.getProjectsTableModel().updateModel();
                             mainScreen.getProjectsTableModel().fireTableDataChanged();
                             JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
@@ -217,6 +218,17 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSaveMouseClicked
 
+    private void addProjectOwnerToProjectsMembers(String projectName) throws DAOException {
+        String ownerName = cbxManager.getSelectedItem().toString();
+        int ownerId = manager.getUserDAO().getUserIdByUserName(ownerName);
+        String ownerRole = manager.getUserDAO().getElement(ownerId).getRole();
+        int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
+        ProjectMember member = new ProjectMember(ownerRole);
+        member.setUserId(ownerId);
+        member.setProjectId(projectId);
+        manager.getProjectMemberDAO().insert(member);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox<String> cbxManager;
