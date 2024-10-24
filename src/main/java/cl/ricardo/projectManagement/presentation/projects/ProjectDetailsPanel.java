@@ -189,6 +189,7 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
                     String projectName = txtName.getText();
                     List<Project> projects = manager.getProjectDAO().getProjectsByName(projectName);
                     if (projects.isEmpty()) {
+                        deletePreviousOwner();
                         saveData();
                         addProjectOwnerToProjectsMembers(projectName);
                         mainScreen.getProjectsTableModel().updateModel();
@@ -200,6 +201,7 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
                         int confirm = JOptionPane.showConfirmDialog(null, 
                                 "Este nombre de proyecto ya existe, ¿está seguro que desea guardar?");
                         if (confirm == 0) {
+                            deletePreviousOwner();
                             saveData();
                             addProjectOwnerToProjectsMembers(projectName);
                             mainScreen.getProjectsTableModel().updateModel();
@@ -218,15 +220,32 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSaveMouseClicked
 
+    private void deletePreviousOwner() throws DAOException {
+        int selectedRow = mainScreen.getProjectsTable().getSelectedRow();
+        int projectId = Integer.parseInt(mainScreen.getProjectsTable().getValueAt(selectedRow, 0).toString());
+//        Project project = manager.getProjectDAO().getProjectsByName(projectName).get(0);
+//        int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
+//        int previousOwnerId = project.getId();
+        String previousOwnerName = mainScreen.getProjectsTable().getValueAt(selectedRow, 3).toString();
+        int previousOwnerId = manager.getUserDAO().getUserIdByUserName(previousOwnerName);
+        manager.getProjectMemberDAO().deleteByUserIdAndProjectId(previousOwnerId, projectId);
+    }
+    
     private void addProjectOwnerToProjectsMembers(String projectName) throws DAOException {
         String ownerName = cbxManager.getSelectedItem().toString();
         int ownerId = manager.getUserDAO().getUserIdByUserName(ownerName);
-        String ownerRole = manager.getUserDAO().getElement(ownerId).getRole();
         int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
-        ProjectMember member = new ProjectMember(ownerRole);
-        member.setUserId(ownerId);
-        member.setProjectId(projectId);
-        manager.getProjectMemberDAO().insert(member);
+        
+        boolean validateIfOwnerDoesNotExistsInProjectMembers = 
+                manager.getProjectMemberDAO().getMemberByProjectAndUserId(projectId, ownerId).isEmpty();
+        
+        if (validateIfOwnerDoesNotExistsInProjectMembers) {
+            String ownerRole = manager.getUserDAO().getElement(ownerId).getRole();
+            ProjectMember member = new ProjectMember(ownerRole);
+            member.setUserId(ownerId);
+            member.setProjectId(projectId);
+            manager.getProjectMemberDAO().insert(member);
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
