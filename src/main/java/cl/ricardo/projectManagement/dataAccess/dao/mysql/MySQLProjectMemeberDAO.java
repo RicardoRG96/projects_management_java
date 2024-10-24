@@ -22,6 +22,7 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
     final String DELETE_BY_PROJECT_ID = "DELETE FROM project_members WHERE project_id = ?";
     final String DELETE_BY_USER_ID = "DELETE FROM project_members WHERE user_id = ?";
     final String GET_BY_USER_ID = "SELECT * FROM project_members WHERE user_id = ?";
+    final String GET_BY_PROJECT_AND_USER_ID = "SELECT * FROM project_members WHERE project_id = ? AND user_id = ?";
     
     private Connection conn;
     
@@ -315,5 +316,39 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
             }
         }
         return members;
+    }
+    
+    @Override
+    public List<ProjectMember> getMemberByProjectAndUserId(int projectId, int userId) throws DAOException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<ProjectMember> projectMember = new ArrayList<>();
+        try {
+            statement = conn.prepareStatement(GET_BY_PROJECT_AND_USER_ID);
+            statement.setInt(1, projectId);
+            statement.setInt(2, userId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                projectMember.add(convert(resultSet));
+            }
+        } catch (SQLException ex) {
+            throw new DAOException("Error en SQL", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+        }
+        return projectMember;
     }
 }

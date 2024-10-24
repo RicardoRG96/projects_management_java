@@ -71,19 +71,6 @@ public class WorkGroupMembersDetailsPanel extends javax.swing.JFrame {
         manager.getWorkGroupMemberDAO().insert(workGroupMember);
     }
     
-    private void updateProjectMembers() throws DAOException {
-        String userName = cbxMemberName.getSelectedItem().toString();
-        int userId = manager.getUserDAO().getUserIdByUserName(userName);
-        String userRole = manager
-                .getUserDAO()
-                .getElement(userId)
-                .getRole();
-        ProjectMember projectMember = new ProjectMember(userRole);
-        projectMember.setUserId(userId);
-        projectMember.setProjectId(projectId);
-        manager.getProjectMemberDAO().insert(projectMember);
-    }
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -219,12 +206,33 @@ public class WorkGroupMembersDetailsPanel extends javax.swing.JFrame {
                 int question = JOptionPane.showConfirmDialog(null,
                     "¿Está seguro que los datos están correctos?");
                 if (question == 0) {
-                    saveData();
-                    updateProjectMembers();
-                    wgMembersTableModel.updateModel(workGroupId);
-                    wgMembersTableModel.fireTableDataChanged();
-                    JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
-                    setVisible(false);
+                    String userName = cbxMemberName.getSelectedItem().toString();
+                    int userId = manager.getUserDAO().getUserIdByUserName(userName);
+                    List<ProjectMember> projectMembers = manager
+                            .getProjectMemberDAO()
+                            .getMemberByProjectAndUserId(projectId, userId);
+                    List<WorkGroupMember> wgMembers = manager
+                            .getWorkGroupMemberDAO()
+                            .getMembersByWorkGroupAndUserId(workGroupId, userId);
+                    if (projectMembers.isEmpty() && wgMembers.isEmpty()) {
+                        saveData();
+                        updateProjectMembers();
+                        wgMembersTableModel.updateModel(workGroupId);
+                        wgMembersTableModel.fireTableDataChanged();
+                        JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
+                        setVisible(false);
+                    } else if (projectMembers.isEmpty() && !wgMembers.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Usuario ya existente en este equipo");
+                        updateProjectMembers();
+                    } else if (!projectMembers.isEmpty() && wgMembers.isEmpty()) {
+                        saveData();
+                        wgMembersTableModel.updateModel(workGroupId);
+                        wgMembersTableModel.fireTableDataChanged();
+                        JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
+                        setVisible(false);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Usuario ya existente en este equipo");
+                    }
                 }
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
@@ -233,6 +241,19 @@ public class WorkGroupMembersDetailsPanel extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Debe rellenar todos los campos");
         }
     }//GEN-LAST:event_btnSaveMouseClicked
+    
+    private void updateProjectMembers() throws DAOException {
+        String userName = cbxMemberName.getSelectedItem().toString();
+        int userId = manager.getUserDAO().getUserIdByUserName(userName);
+        String userRole = manager
+                .getUserDAO()
+                .getElement(userId)
+                .getRole();
+        ProjectMember projectMember = new ProjectMember(userRole);
+        projectMember.setUserId(userId);
+        projectMember.setProjectId(projectId);
+        manager.getProjectMemberDAO().insert(projectMember);
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;

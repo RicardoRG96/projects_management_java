@@ -21,6 +21,8 @@ public class MySQLWorkGroupMemberDAO implements WorkGroupMemberDAO {
     final String DELETE_BY_WORKGROUP_ID = "DELETE FROM workgroups_members WHERE workgroup_id = ?";
     final String DELETE_BY_USER_ID = "DELETE FROM workgroups_members WHERE user_id = ?";
     final String GET_BY_USER_ID = "SELECT * FROM workgroups_members WHERE user_id = ?";
+    final String GET_BY_WORKGROUP_AND_USER_ID = 
+            "SELECT * FROM workgroups_members WHERE workgroup_id = ? AND user_id = ?";
     
     private Connection conn;
     
@@ -260,6 +262,41 @@ public class MySQLWorkGroupMemberDAO implements WorkGroupMemberDAO {
         try {
             statement = conn.prepareStatement(GET_BY_USER_ID);
             statement.setInt(1, userId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                wgMembers.add(convert(resultSet));
+            }
+        } catch (SQLException ex) {
+            throw new DAOException("Error en SQL aqui", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL cerrar statement", ex);
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL cerrar resultSet", ex);
+                }
+            }
+        }
+        return wgMembers;
+    }
+    
+    @Override
+    public List<WorkGroupMember> getMembersByWorkGroupAndUserId(int workGroupId, int userId) 
+            throws DAOException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<WorkGroupMember> wgMembers = new ArrayList<>();
+        try {
+            statement = conn.prepareStatement(GET_BY_WORKGROUP_AND_USER_ID);
+            statement.setInt(1, workGroupId);
+            statement.setInt(2, userId);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 wgMembers.add(convert(resultSet));

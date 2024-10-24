@@ -30,4 +30,6 @@ public interface ProjectMemberDAO extends DAO<ProjectMember, Integer> {
     
     List<ProjectMember> getMembersByUserId(int userId) throws DAOException;
     
+    List<ProjectMember> getMemberByProjectAndUserId(int projectId, int userId) throws DAOException;
+    
 }
