@@ -20,6 +20,8 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
     final String DELETE_BY_USER_ID_AND_PROJECT_ID = 
             "DELETE FROM project_members WHERE user_id = ? AND project_id = ?";
     final String DELETE_BY_PROJECT_ID = "DELETE FROM project_members WHERE project_id = ?";
+    final String DELETE_BY_USER_ID = "DELETE FROM project_members WHERE user_id = ?";
+    final String GET_BY_USER_ID = "SELECT * FROM project_members WHERE user_id = ?";
     
     private Connection conn;
     
@@ -258,4 +260,60 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
         }
     }
     
+    @Override
+    public void deleteByUserId(int userId) throws DAOException {
+        PreparedStatement statement = null;
+        try {
+            statement = conn.prepareStatement(DELETE_BY_USER_ID);
+            statement.setInt(1, userId);
+            if (statement.executeUpdate() == 0) {
+                throw new DAOException("Posiblemente no se eliminó el registro");
+//                throw new SQLException();
+            } 
+        } catch (SQLException ex) {
+//            throw new DAOException("Error en SQL", ex);
+            System.out.println(ex.toString());
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+        }
+    }
+    
+    @Override
+    public List<ProjectMember> getMembersByUserId(int userId) throws DAOException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<ProjectMember> members = new ArrayList<>();
+        try {
+            statement = conn.prepareStatement(GET_BY_USER_ID);
+            statement.setInt(1, userId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                members.add(convert(resultSet));
+            }
+        } catch (SQLException ex) {
+            throw new DAOException("Error en SQL", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+        }
+        return members;
+    }
 }

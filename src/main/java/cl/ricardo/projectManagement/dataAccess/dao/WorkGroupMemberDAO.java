@@ -24,4 +24,8 @@ public interface WorkGroupMemberDAO extends DAO<WorkGroupMember, Integer> {
     
     void deleteByWorkGroupId(int workGroupID) throws DAOException;
     
+    void deleteByUserId(int userId) throws DAOException;
+    
+    List<WorkGroupMember> getMembersByUserId(int userId) throws DAOException;
+    
 }

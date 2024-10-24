@@ -1,8 +1,11 @@
 package cl.ricardo.projectManagement.presentation.users;
 
+import cl.ricardo.projectManagement.dataAccess.ProjectMember;
 import cl.ricardo.projectManagement.dataAccess.User;
+import cl.ricardo.projectManagement.dataAccess.WorkGroupMember;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 public class UsersList extends javax.swing.JFrame {
@@ -166,11 +169,27 @@ public class UsersList extends javax.swing.JFrame {
     }
     
     private void btnDeleteUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteUserMouseClicked
-        if (usersTable.getSelectedRow() >= 0) {
+        int selectedRow = usersTable.getSelectedRow();
+        if (selectedRow >= 0) {
             int question = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar este usuario?");
             if (question == 0) {
                 try {
-                    deleteUser();
+                    int userId = Integer.parseInt(usersTable.getValueAt(selectedRow, 0).toString());
+                    List<WorkGroupMember> wgMembers = manager.getWorkGroupMemberDAO().getMembersByUserId(userId);
+                    List<ProjectMember> projectMembers = manager.getProjectMemberDAO().getMembersByUserId(userId);
+                    if (wgMembers.isEmpty() && projectMembers.isEmpty()) {
+                        deleteUser();
+                    } else if (wgMembers.isEmpty() && !projectMembers.isEmpty()) {
+                        deleteUserOnProjectsMembers();
+                        deleteUser();
+                    } else if (!wgMembers.isEmpty() && projectMembers.isEmpty()) {
+                        deleteUserOnWorkgroupsMembers();
+                        deleteUser();
+                    } else {
+                        deleteUserOnWorkgroupsMembers();
+                        deleteUserOnProjectsMembers();
+                        deleteUser();
+                    }
                     JOptionPane.showMessageDialog(null, "Usuario eliminado con éxito");
                     model.updateModel();
                     model.fireTableDataChanged();
@@ -182,6 +201,18 @@ public class UsersList extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Debe seleccionar una fila");
         }
     }//GEN-LAST:event_btnDeleteUserMouseClicked
+    
+    private void deleteUserOnWorkgroupsMembers() throws DAOException {
+        int selectedRow = usersTable.getSelectedRow();
+        int userId = Integer.parseInt(usersTable.getValueAt(selectedRow, 0).toString());
+        manager.getWorkGroupMemberDAO().deleteByUserId(userId);
+    }
+    
+    private void deleteUserOnProjectsMembers() throws DAOException {
+        int selectedRow = usersTable.getSelectedRow();
+        int userId = Integer.parseInt(usersTable.getValueAt(selectedRow, 0).toString());
+        manager.getProjectMemberDAO().deleteByUserId(userId);
+    }
     
     private void deleteUser() throws DAOException {
         int currentSelectedRow = usersTable.getSelectedRow();

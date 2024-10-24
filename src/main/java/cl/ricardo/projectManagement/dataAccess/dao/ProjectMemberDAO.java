@@ -26,4 +26,8 @@ public interface ProjectMemberDAO extends DAO<ProjectMember, Integer> {
     
     void deleteByProjectId(int projectId) throws DAOException;
     
+    void deleteByUserId(int userId) throws DAOException;
+    
+    List<ProjectMember> getMembersByUserId(int userId) throws DAOException;
+    
 }
