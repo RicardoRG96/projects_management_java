@@ -155,6 +155,15 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         txtWorkGroupsTableElementsCount = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
+        jPanel13 = new javax.swing.JPanel();
+        btnAddWorkGroup1 = new javax.swing.JButton();
+        btnEditWorkgroup1 = new javax.swing.JButton();
+        btnDeleteWorkGroup1 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
 
@@ -921,15 +930,160 @@ public class MainScreen extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab4", jPanel6);
 
+        jPanel7.setBackground(new java.awt.Color(245, 237, 237));
+
+        jPanel13.setBackground(new java.awt.Color(247, 249, 242));
+
+        btnAddWorkGroup1.setBackground(new java.awt.Color(245, 237, 237));
+        btnAddWorkGroup1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/agregar.png"))); // NOI18N
+        btnAddWorkGroup1.setBorder(null);
+        btnAddWorkGroup1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAddWorkGroup1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddWorkGroup1.setPreferredSize(new java.awt.Dimension(50, 50));
+        btnAddWorkGroup1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddWorkGroup1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAddWorkGroup1MouseClicked(evt);
+            }
+        });
+        btnAddWorkGroup1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddWorkGroup1ActionPerformed(evt);
+            }
+        });
+
+        btnEditWorkgroup1.setBackground(new java.awt.Color(245, 237, 237));
+        btnEditWorkgroup1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar.png"))); // NOI18N
+        btnEditWorkgroup1.setBorder(null);
+        btnEditWorkgroup1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEditWorkgroup1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnEditWorkgroup1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEditWorkgroup1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnEditWorkgroup1MouseClicked(evt);
+            }
+        });
+
+        btnDeleteWorkGroup1.setBackground(new java.awt.Color(245, 237, 237));
+        btnDeleteWorkGroup1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar_usuario.png"))); // NOI18N
+        btnDeleteWorkGroup1.setBorder(null);
+        btnDeleteWorkGroup1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDeleteWorkGroup1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnDeleteWorkGroup1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDeleteWorkGroup1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnDeleteWorkGroup1MouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(btnAddWorkGroup1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
+                .addComponent(btnEditWorkgroup1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addComponent(btnDeleteWorkGroup1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnEditWorkgroup1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDeleteWorkGroup1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAddWorkGroup1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        jScrollPane3.setBackground(new java.awt.Color(245, 237, 237));
+
+        jTable1.setBackground(new java.awt.Color(245, 237, 237));
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "PROYECTO", "EQUIPO", "NOMBRE", "DESCRIPCION", "STATUS", "PRIORIDAD", "ASIGNADO A", "FECHA CREACION", "FECHA ACTUALIZACION"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.getTableHeader().setReorderingAllowed(false);
+        jScrollPane3.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
+            jTable1.getColumnModel().getColumn(1).setPreferredWidth(25);
+            jTable1.getColumnModel().getColumn(2).setPreferredWidth(25);
+            jTable1.getColumnModel().getColumn(3).setPreferredWidth(30);
+            jTable1.getColumnModel().getColumn(4).setPreferredWidth(30);
+            jTable1.getColumnModel().getColumn(5).setPreferredWidth(30);
+            jTable1.getColumnModel().getColumn(6).setPreferredWidth(30);
+            jTable1.getColumnModel().getColumn(7).setPreferredWidth(30);
+            jTable1.getColumnModel().getColumn(8).setPreferredWidth(25);
+            jTable1.getColumnModel().getColumn(9).setPreferredWidth(25);
+        }
+
+        jLabel13.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel13.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel13.setText("Agregar");
+
+        jLabel14.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel14.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel14.setText("Editar");
+
+        jLabel15.setBackground(new java.awt.Color(245, 237, 237));
+        jLabel15.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel15.setText("Eliminar");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 610, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(jLabel13)
+                            .addGap(31, 31, 31)
+                            .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(37, 37, 37)
+                            .addComponent(jLabel15))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
+                            .addGap(192, 192, 192)
+                            .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 455, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab5", jPanel7);
@@ -1294,6 +1448,22 @@ public class MainScreen extends javax.swing.JFrame {
     private void btnSeeMembersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeeMembersActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSeeMembersActionPerformed
+
+    private void btnAddWorkGroup1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddWorkGroup1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAddWorkGroup1MouseClicked
+
+    private void btnAddWorkGroup1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddWorkGroup1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAddWorkGroup1ActionPerformed
+
+    private void btnEditWorkgroup1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditWorkgroup1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditWorkgroup1MouseClicked
+
+    private void btnDeleteWorkGroup1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteWorkGroup1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDeleteWorkGroup1MouseClicked
    
     private void deleteWorkGroup() throws DAOException {
         int selectedRow = workGroupsTable.getSelectedRow();
@@ -1421,10 +1591,13 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JPanel JPanel;
     private javax.swing.JButton btnAddProject;
     private javax.swing.JButton btnAddWorkGroup;
+    private javax.swing.JButton btnAddWorkGroup1;
     private javax.swing.JButton btnDeleteProject;
     private javax.swing.JButton btnDeleteWorkGroup;
+    private javax.swing.JButton btnDeleteWorkGroup1;
     private javax.swing.JButton btnEditProject;
     private javax.swing.JButton btnEditWorkgroup;
+    private javax.swing.JButton btnEditWorkgroup1;
     private javax.swing.JLabel btnListAllUsers;
     private javax.swing.JPanel btnRegisterUserAccess;
     private javax.swing.JButton btnSeeMembers;
@@ -1434,6 +1607,9 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1446,6 +1622,7 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1456,7 +1633,9 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JPanel notificationsTab;
     private javax.swing.JPanel projectsTab;
     private javax.swing.JTable projectsTable;
