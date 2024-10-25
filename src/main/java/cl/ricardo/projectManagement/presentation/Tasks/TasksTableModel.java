@@ -1,0 +1,91 @@
+package cl.ricardo.projectManagement.presentation.Tasks;
+
+import cl.ricardo.projectManagement.dataAccess.Task;
+import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
+import cl.ricardo.projectManagement.dataAccess.dao.ProjectDAO;
+import cl.ricardo.projectManagement.dataAccess.dao.TaskDAO;
+import cl.ricardo.projectManagement.dataAccess.dao.UserDAO;
+import cl.ricardo.projectManagement.dataAccess.dao.WorkGroupDAO;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.table.AbstractTableModel;
+
+public class TasksTableModel extends AbstractTableModel {
+    
+    private TaskDAO Tasks;
+    
+    private ProjectDAO projects;
+    
+    private WorkGroupDAO workGroups;
+    
+    private UserDAO users;
+    
+    private List<Task> data = new ArrayList<>();
+    
+    public TasksTableModel(TaskDAO tasks, ProjectDAO projects, WorkGroupDAO workGroups, UserDAO users) {
+        this.Tasks = tasks;
+        this.projects = projects;
+        this.workGroups = workGroups;
+        this.users = users;
+    }
+
+    public void updateModel() throws DAOException {
+        data = Tasks.getAll();
+    }
+    
+    @Override
+    public String getColumnName(int column) {
+        return switch(column) {
+            case 0 -> "ID";
+            case 1 -> "PROYECTO";
+            case 2 -> "EQUIPO";
+            case 3 -> "NOMBRE";
+            case 4 -> "DESCRIPCION";
+            case 5 -> "STATUS";
+            case 6 -> "PRIORIDAD";
+            case 7 -> "FECHA LIMITE";
+            case 8 -> "ASIGNADO A";
+            case 9 -> "FECHA CREACION";
+            case 10 -> "FECHA ACTUALIZACION";
+            default -> "[no]";
+        };
+    }
+    
+    @Override
+    public int getRowCount() {
+        return data.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return 11;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        Task asked = data.get(rowIndex);
+        int projectId = asked.getProjectId();
+        int workGroupId = asked.getWorkGroupId();
+        int userId = asked.getAssignedTo();
+        try {
+            return switch(columnIndex) {
+                case 0 -> asked.getId();
+                case 1 -> projects.getElement(projectId).getName();
+                case 2 -> workGroups.getElement(workGroupId).getName();
+                case 3 -> asked.getTitle();
+                case 4 -> asked.getDescription();
+                case 5 -> asked.getStatus();
+                case 6 -> asked.getPriority();
+                case 7 -> asked.getDueDate().toString();
+                case 8 -> users.getElement(userId).getUserName();
+                case 9 -> asked.getCreatedAt();
+                case 10 -> asked.getUpdatedAt();
+                default -> "";
+            };
+        } catch (DAOException ex) {
+            System.out.println(ex.toString());
+            return "null";
+        }
+    }
+    
+}

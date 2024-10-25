@@ -12,4 +12,6 @@ public interface DAOManager {
     
     WorkGroupMemberDAO getWorkGroupMemberDAO();
     
+    TaskDAO getTaskDAO();
+    
 }

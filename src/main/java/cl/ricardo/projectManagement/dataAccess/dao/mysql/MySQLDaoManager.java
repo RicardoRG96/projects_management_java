@@ -5,6 +5,7 @@ import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.ProjectDAO;
 import cl.ricardo.projectManagement.dataAccess.dao.ProjectMemberDAO;
+import cl.ricardo.projectManagement.dataAccess.dao.TaskDAO;
 import cl.ricardo.projectManagement.dataAccess.dao.UserDAO;
 import cl.ricardo.projectManagement.dataAccess.dao.WorkGroupDAO;
 import cl.ricardo.projectManagement.dataAccess.dao.WorkGroupMemberDAO;
@@ -26,6 +27,8 @@ public class MySQLDaoManager implements DAOManager {
     private ProjectMemberDAO projectMembers = null;
     
     private WorkGroupMemberDAO workGroupMembers = null;
+    
+    private TaskDAO tasks = null;
     
     public MySQLDaoManager(String host, String database, String username, String password) throws SQLException {
         conn = DriverManager
@@ -70,6 +73,14 @@ public class MySQLDaoManager implements DAOManager {
             workGroupMembers = new MySQLWorkGroupMemberDAO(conn);
         }
         return workGroupMembers;
+    }
+    
+    @Override
+    public TaskDAO getTaskDAO() {
+        if (tasks == null) {
+            tasks = new MySQLTaskDAO(conn);
+        }
+        return tasks;
     }
     
     public static void main(String[] args) throws SQLException, DAOException {

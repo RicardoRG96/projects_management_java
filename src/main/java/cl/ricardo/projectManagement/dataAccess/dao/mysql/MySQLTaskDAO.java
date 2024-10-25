@@ -148,12 +148,14 @@ public class MySQLTaskDAO implements TaskDAO {
         LocalDate dueDate = LocalDate.parse(resultSet.getDate("due_date").toString());
         
         Task task = new Task(title, description, status, priority, dueDate);
+        int taskId = resultSet.getInt("id");
         int projectId = resultSet.getInt("project_id");
         int workGroupId = resultSet.getInt("workgroup_id");
         int assignedTo = resultSet.getInt("assigned_to");
         String createdAt = resultSet.getString("created_at");
         String updatedAt = resultSet.getString("updated_at");
         
+        task.setId(taskId);
         task.setProjectId(projectId);
         task.setWorkGroupId(workGroupId);
         task.setAssignedTo(assignedTo);

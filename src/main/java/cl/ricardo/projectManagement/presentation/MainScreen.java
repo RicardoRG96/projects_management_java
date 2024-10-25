@@ -5,12 +5,14 @@ import cl.ricardo.projectManagement.presentation.projects.ProjectDetailsPanel;
 import cl.ricardo.projectManagement.presentation.users.UsersList;
 import cl.ricardo.projectManagement.dataAccess.Project;
 import cl.ricardo.projectManagement.dataAccess.ProjectMember;
+import cl.ricardo.projectManagement.dataAccess.Task;
 import cl.ricardo.projectManagement.dataAccess.User;
 import cl.ricardo.projectManagement.dataAccess.WorkGroup;
 import cl.ricardo.projectManagement.dataAccess.WorkGroupMember;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.mysql.MySQLDaoManager;
+import cl.ricardo.projectManagement.presentation.Tasks.TasksTableModel;
 import cl.ricardo.projectManagement.presentation.projects.ProjectMembersList;
 import cl.ricardo.projectManagement.presentation.workGroups.WorkGroupDetailsPanel;
 import cl.ricardo.projectManagement.presentation.workGroups.WorkGroupsMembersList;
@@ -41,9 +43,13 @@ public class MainScreen extends javax.swing.JFrame {
     
     private WorkGroupMember workGroupMember;
     
+    private Task task;
+    
     private ProjectsTableModel projectsTableModel;
     
     private WorkGroupsTableModel workGroupsTableModel;
+    
+    private TasksTableModel tasksTableModel;
 
     public MainScreen(
             DAOManager manager, 
@@ -51,7 +57,8 @@ public class MainScreen extends javax.swing.JFrame {
             Project project, 
             ProjectMember projectMember,
             WorkGroup workGroup,
-            WorkGroupMember workGroupMember
+            WorkGroupMember workGroupMember,
+            Task task
     ) throws DAOException {
         initComponents();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -62,16 +69,25 @@ public class MainScreen extends javax.swing.JFrame {
         this.projectMember = projectMember;
         this.workGroup = workGroup;
         this.workGroupMember = workGroupMember;
+        this.task = task;
         this.projectsTableModel = new ProjectsTableModel(manager.getProjectDAO(), manager.getUserDAO());
         this.workGroupsTableModel = new WorkGroupsTableModel(
                 manager.getWorkGroupDAO(), 
                 manager.getProjectDAO(), 
                 manager.getUserDAO()
         );
+        this.tasksTableModel = new TasksTableModel(
+                manager.getTaskDAO(),
+                manager.getProjectDAO(),
+                manager.getWorkGroupDAO(),
+                manager.getUserDAO()
+        );
         projectsTableModel.updateModel();
         projectsTable.setModel(projectsTableModel);
         workGroupsTableModel.updateModel();
         workGroupsTable.setModel(workGroupsTableModel);
+        tasksTableModel.updateModel();
+        tasksTable.setModel(tasksTableModel);
         loadTablesElementsCount();
          addWindowListener(new WindowAdapter() {
             @Override
@@ -160,10 +176,11 @@ public class MainScreen extends javax.swing.JFrame {
         btnEditWorkgroup1 = new javax.swing.JButton();
         btnDeleteWorkGroup1 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tasksTable = new javax.swing.JTable();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
+        txtTasksTableElementsCount = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
 
@@ -1002,36 +1019,37 @@ public class MainScreen extends javax.swing.JFrame {
 
         jScrollPane3.setBackground(new java.awt.Color(245, 237, 237));
 
-        jTable1.setBackground(new java.awt.Color(245, 237, 237));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tasksTable.setBackground(new java.awt.Color(245, 237, 237));
+        tasksTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "PROYECTO", "EQUIPO", "NOMBRE", "DESCRIPCION", "STATUS", "PRIORIDAD", "ASIGNADO A", "FECHA CREACION", "FECHA ACTUALIZACION"
+                "ID", "PROYECTO", "EQUIPO", "NOMBRE", "DESCRIPCION", "STATUS", "PRIORIDAD", "FECHA LIMITE", "ASIGNADO A", "FECHA CREACION", "FECHA ACTUALIZACION"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane3.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(25);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(25);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(30);
-            jTable1.getColumnModel().getColumn(4).setPreferredWidth(30);
-            jTable1.getColumnModel().getColumn(5).setPreferredWidth(30);
-            jTable1.getColumnModel().getColumn(6).setPreferredWidth(30);
-            jTable1.getColumnModel().getColumn(7).setPreferredWidth(30);
-            jTable1.getColumnModel().getColumn(8).setPreferredWidth(25);
-            jTable1.getColumnModel().getColumn(9).setPreferredWidth(25);
+        tasksTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane3.setViewportView(tasksTable);
+        if (tasksTable.getColumnModel().getColumnCount() > 0) {
+            tasksTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+            tasksTable.getColumnModel().getColumn(1).setPreferredWidth(25);
+            tasksTable.getColumnModel().getColumn(2).setPreferredWidth(25);
+            tasksTable.getColumnModel().getColumn(3).setPreferredWidth(30);
+            tasksTable.getColumnModel().getColumn(4).setPreferredWidth(30);
+            tasksTable.getColumnModel().getColumn(5).setPreferredWidth(30);
+            tasksTable.getColumnModel().getColumn(6).setPreferredWidth(30);
+            tasksTable.getColumnModel().getColumn(7).setPreferredWidth(30);
+            tasksTable.getColumnModel().getColumn(8).setPreferredWidth(30);
+            tasksTable.getColumnModel().getColumn(9).setPreferredWidth(25);
+            tasksTable.getColumnModel().getColumn(10).setPreferredWidth(25);
         }
 
         jLabel13.setBackground(new java.awt.Color(245, 237, 237));
@@ -1055,9 +1073,6 @@ public class MainScreen extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel7Layout.createSequentialGroup()
                             .addContainerGap()
@@ -1068,7 +1083,12 @@ public class MainScreen extends javax.swing.JFrame {
                             .addComponent(jLabel15))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
                             .addGap(192, 192, 192)
-                            .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTasksTableElementsCount, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
@@ -1083,7 +1103,9 @@ public class MainScreen extends javax.swing.JFrame {
                     .addComponent(jLabel15))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTasksTableElementsCount, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab5", jPanel7);
@@ -1522,6 +1544,9 @@ public class MainScreen extends javax.swing.JFrame {
         txtWorkGroupsTableElementsCount.setText(
                 String.valueOf(workGroupsTable.getRowCount()) + " Registros"
         );
+        txtTasksTableElementsCount.setText(
+                String.valueOf(tasksTable.getRowCount() + " Registros")
+        );
     }
 
     public JTable getProjectsTable() {
@@ -1555,8 +1580,22 @@ public class MainScreen extends javax.swing.JFrame {
     public void setWorkGroupsTable(JTable workGroupsTable) {
         this.workGroupsTable = workGroupsTable;
     }
-    
-    
+
+    public JTable getTasksTable() {
+        return tasksTable;
+    }
+
+    public void setTasksTable(JTable tasksTable) {
+        this.tasksTable = tasksTable;
+    }
+
+    public TasksTableModel getTasksTableModel() {
+        return tasksTableModel;
+    }
+
+    public void setTasksTableModel(TasksTableModel tasksTableModel) {
+        this.tasksTableModel = tasksTableModel;
+    } 
     
     public static void main(String args[]) throws SQLException {
         DAOManager manager = new MySQLDaoManager("localhost", "project_management_system", "root", "");
@@ -1565,6 +1604,7 @@ public class MainScreen extends javax.swing.JFrame {
         ProjectMember projectMember = new ProjectMember();
         WorkGroup workGroup = new WorkGroup();
         WorkGroupMember workGroupMember = new WorkGroupMember();
+        Task task = new Task();
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 new MainScreen(
@@ -1573,7 +1613,9 @@ public class MainScreen extends javax.swing.JFrame {
                         project, 
                         projectMember, 
                         workGroup, 
-                        workGroupMember).setVisible(true);
+                        workGroupMember,
+                        task
+                    ).setVisible(true);
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }
@@ -1635,15 +1677,16 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JPanel notificationsTab;
     private javax.swing.JPanel projectsTab;
     private javax.swing.JTable projectsTable;
     private javax.swing.JPanel reportsTab;
     private javax.swing.JPanel tasksTab;
+    private javax.swing.JTable tasksTable;
     private javax.swing.JLabel txtCurrentUser;
     private javax.swing.JLabel txtCurrentUserRole;
     private javax.swing.JLabel txtProjectsTableElementsCount;
+    private javax.swing.JLabel txtTasksTableElementsCount;
     private javax.swing.JLabel txtWorkGroupsTableElementsCount;
     private javax.swing.JPanel usersTab;
     private javax.swing.JPanel workGroupsTab;
