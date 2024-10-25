@@ -220,8 +220,7 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
             statement.setInt(1, userId);
             statement.setInt(2, projectId);
             if (statement.executeUpdate() == 0) {
-//                throw new DAOException("Posiblemente no se eliminó el registro");
-                throw new SQLException();
+                throw new DAOException("Posiblemente no se eliminó el registro");
             } 
         } catch (SQLException ex) {
 //            throw new DAOException("Error en SQL", ex);

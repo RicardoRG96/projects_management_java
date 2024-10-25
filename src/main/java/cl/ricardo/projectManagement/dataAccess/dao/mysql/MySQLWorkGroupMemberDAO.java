@@ -20,6 +20,8 @@ public class MySQLWorkGroupMemberDAO implements WorkGroupMemberDAO {
     final String GET_ONE_BY_PROJECT_ID = "SELECT * FROM workgroups_members WHERE workgroup_id = ?";
     final String DELETE_BY_WORKGROUP_ID = "DELETE FROM workgroups_members WHERE workgroup_id = ?";
     final String DELETE_BY_USER_ID = "DELETE FROM workgroups_members WHERE user_id = ?";
+    final String DELETE_BY_USER_AND_WORKGROUP_ID = 
+            "DELETE FROM workgroups_members WHERE user_id = ? AND workgroup_id = ?";
     final String GET_BY_USER_ID = "SELECT * FROM workgroups_members WHERE user_id = ?";
     final String GET_BY_WORKGROUP_AND_USER_ID = 
             "SELECT * FROM workgroups_members WHERE workgroup_id = ? AND user_id = ?";
@@ -127,6 +129,29 @@ public class MySQLWorkGroupMemberDAO implements WorkGroupMemberDAO {
         try {
             statement = conn.prepareStatement(DELETE_BY_USER_ID);
             statement.setInt(1, userId);
+           if (statement.executeUpdate() == 0) {
+               throw new DAOException("Posiblemente el elemento no fue eliminado");
+           }
+        } catch (SQLException ex) {
+            throw new DAOException("Error en SQL", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void deleteByUserIdAndWorkGroupId(int userId, int workGroupId) throws DAOException {
+        PreparedStatement statement = null;
+        try {
+            statement = conn.prepareStatement(DELETE_BY_USER_AND_WORKGROUP_ID);
+            statement.setInt(1, userId);
+            statement.setInt(2, workGroupId);
            if (statement.executeUpdate() == 0) {
                throw new DAOException("Posiblemente el elemento no fue eliminado");
            }

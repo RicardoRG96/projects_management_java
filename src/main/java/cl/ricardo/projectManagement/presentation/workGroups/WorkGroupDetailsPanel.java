@@ -11,6 +11,8 @@ import cl.ricardo.projectManagement.dataAccess.dao.ProjectDAO;
 import cl.ricardo.projectManagement.dataAccess.dao.UserDAO;
 import cl.ricardo.projectManagement.dataAccess.dao.WorkGroupDAO;
 import cl.ricardo.projectManagement.presentation.MainScreen;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
@@ -35,6 +37,13 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
         listAllUsers();
         loadData();
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mainScreen.getWorkGroupsTable().setEnabled(true);
+            }
+        });
     }
     
     private void loadData() throws DAOException {
@@ -263,6 +272,8 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                             .getWorkGroupDAO()
                             .getGroupsByNameAndProjectId(workGroupName, projectId);
                     if (workGroups.isEmpty()) {
+                        deletePreviousLeaderFromWorkGroupsMembers();
+                        deletePreviousLeaderFromProjectMembers();
                         saveData();
                         addWorkGroupLeaderToWorkGroupMembers(workGroupName);
                         addWorkGroupLeaderToProjectsMembers();
@@ -271,10 +282,13 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
                         mainScreen.loadTablesElementsCount();
                         setVisible(false);
+                        mainScreen.getWorkGroupsTable().setEnabled(true);
                     } else {
                         int confirmation = JOptionPane.showConfirmDialog(null, 
                                 "Este nombre de equipo ya existe en el proyecto seleccionado, ¿Está seguro que desea guardar?");
                         if (confirmation == 0) {
+                            deletePreviousLeaderFromWorkGroupsMembers();
+                            deletePreviousLeaderFromProjectMembers();
                             saveData();
                             addWorkGroupLeaderToWorkGroupMembers(workGroupName);
                             addWorkGroupLeaderToProjectsMembers();
@@ -283,9 +297,11 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                             JOptionPane.showMessageDialog(null, "Datos guardados con éxito");
                             mainScreen.loadTablesElementsCount();
                             setVisible(false);
+                            mainScreen.getWorkGroupsTable().setEnabled(true);
                         }
                     }
                 }
+                mainScreen.getWorkGroupsTable().setEnabled(true);
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }
@@ -294,15 +310,39 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSaveMouseClicked
 
+    private void deletePreviousLeaderFromWorkGroupsMembers() throws DAOException {
+        int selectedRow = mainScreen.getWorkGroupsTable().getSelectedRow();
+        String leaderName = mainScreen.getWorkGroupsTable().getValueAt(selectedRow, 3).toString();
+        int leaderId = manager.getUserDAO().getUserIdByUserName(leaderName);
+        int workgroupId = Integer.parseInt(mainScreen.getWorkGroupsTable().getValueAt(selectedRow, 0).toString());
+        
+        manager.getWorkGroupMemberDAO().deleteByUserIdAndWorkGroupId(leaderId, workgroupId);
+    }
+    
+    private void deletePreviousLeaderFromProjectMembers() throws DAOException {
+        int selectedRow = mainScreen.getWorkGroupsTable().getSelectedRow();
+        String leaderName = mainScreen.getWorkGroupsTable().getValueAt(selectedRow, 3).toString();
+        int leaderId = manager.getUserDAO().getUserIdByUserName(leaderName);
+        String projectName = mainScreen.getWorkGroupsTable().getValueAt(selectedRow, 1).toString();
+        int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
+        
+        manager.getProjectMemberDAO().deleteByUserIdAndProjectId(leaderId, projectId);
+    }
+    
     private void addWorkGroupLeaderToWorkGroupMembers(String workGroupName) throws DAOException {
         String leaderName = cbxLeader.getSelectedItem().toString();
         int leaderId = manager.getUserDAO().getUserIdByUserName(leaderName);
         int workGroupId = manager.getWorkGroupDAO().getWorkGroupIdByName(workGroupName);
         
-        WorkGroupMember member = new WorkGroupMember();
-        member.setUserId(leaderId);
-        member.setWorkGroupId(workGroupId);
-        manager.getWorkGroupMemberDAO().insert(member);
+        boolean validateIfLeaderDoesNotExistsInWorkGroupsMembers = 
+                manager.getWorkGroupMemberDAO().getMembersByWorkGroupAndUserId(workGroupId, leaderId).isEmpty();
+        
+        if (validateIfLeaderDoesNotExistsInWorkGroupsMembers) {
+            WorkGroupMember member = new WorkGroupMember();
+            member.setUserId(leaderId);
+            member.setWorkGroupId(workGroupId);
+            manager.getWorkGroupMemberDAO().insert(member);
+        }
     }
     
     private void addWorkGroupLeaderToProjectsMembers() throws DAOException {
@@ -310,12 +350,17 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
         String leaderName = cbxLeader.getSelectedItem().toString();
         int leaderId = manager.getUserDAO().getUserIdByUserName(leaderName);
         int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
-        String leaderRole = manager.getUserDAO().getElement(leaderId).getRole();
         
-        ProjectMember member = new ProjectMember(leaderRole);
-        member.setUserId(leaderId);
-        member.setProjectId(projectId);
-        manager.getProjectMemberDAO().insert(member);
+        boolean validateIfLeaderDoesNotExistsInProjectMembers = 
+                manager.getProjectMemberDAO().getMemberByProjectAndUserId(projectId, leaderId).isEmpty();
+        
+        if (validateIfLeaderDoesNotExistsInProjectMembers) {
+            String leaderRole = manager.getUserDAO().getElement(leaderId).getRole();
+            ProjectMember member = new ProjectMember(leaderRole);
+            member.setUserId(leaderId);
+            member.setProjectId(projectId);
+            manager.getProjectMemberDAO().insert(member);
+        }
     }
     
     private void btnSaveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseEntered

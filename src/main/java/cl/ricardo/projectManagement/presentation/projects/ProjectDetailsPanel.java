@@ -7,6 +7,8 @@ import cl.ricardo.projectManagement.dataAccess.dao.DAOException;
 import cl.ricardo.projectManagement.dataAccess.dao.DAOManager;
 import cl.ricardo.projectManagement.dataAccess.dao.ProjectDAO;
 import cl.ricardo.projectManagement.presentation.MainScreen;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +35,13 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
         this.listAllUsers();
         this.loadData();
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mainScreen.getProjectsTable().setEnabled(true);
+            }
+        });
     }
 
     public Project getProject() {
@@ -212,6 +221,7 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
                         }
                     }
                 }
+                mainScreen.getProjectsTable().setEnabled(true);
             } catch (DAOException ex) {
                 System.out.println(ex.toString());
             }
@@ -223,11 +233,9 @@ public class ProjectDetailsPanel extends javax.swing.JFrame {
     private void deletePreviousOwner() throws DAOException {
         int selectedRow = mainScreen.getProjectsTable().getSelectedRow();
         int projectId = Integer.parseInt(mainScreen.getProjectsTable().getValueAt(selectedRow, 0).toString());
-//        Project project = manager.getProjectDAO().getProjectsByName(projectName).get(0);
-//        int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
-//        int previousOwnerId = project.getId();
         String previousOwnerName = mainScreen.getProjectsTable().getValueAt(selectedRow, 3).toString();
         int previousOwnerId = manager.getUserDAO().getUserIdByUserName(previousOwnerName);
+        
         manager.getProjectMemberDAO().deleteByUserIdAndProjectId(previousOwnerId, projectId);
     }
     

@@ -1046,6 +1046,7 @@ public class MainScreen extends javax.swing.JFrame {
                 projectDetails = new ProjectDetailsPanel("MODIFY", project, manager, this);
                 projectDetails.setVisible(true);
                 projectDetails.setLocationRelativeTo(null);
+                projectsTable.setEnabled(false);
             } else {
                 JOptionPane.showMessageDialog(null, "Seleccione un elemento de la tabla");
             }
@@ -1176,6 +1177,7 @@ public class MainScreen extends javax.swing.JFrame {
                     );
                     workGroupDetailsPanel.setVisible(true);
                     workGroupDetailsPanel.setLocationRelativeTo(null);
+                    workGroupsTable.setEnabled(false);
                 } catch (DAOException ex) {
                     System.out.println(ex.toString());
                 }
