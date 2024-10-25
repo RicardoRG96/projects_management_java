@@ -275,6 +275,7 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                         deletePreviousLeaderFromWorkGroupsMembers();
                         deletePreviousLeaderFromProjectMembers();
                         saveData();
+                        addAllWorkGroupMembersToProjectMembers();
                         addWorkGroupLeaderToWorkGroupMembers(workGroupName);
                         addWorkGroupLeaderToProjectsMembers();
                         mainScreen.getWorkGroupsTableModel().updateModel();
@@ -290,6 +291,7 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                             deletePreviousLeaderFromWorkGroupsMembers();
                             deletePreviousLeaderFromProjectMembers();
                             saveData();
+                            addAllWorkGroupMembersToProjectMembers();
                             addWorkGroupLeaderToWorkGroupMembers(workGroupName);
                             addWorkGroupLeaderToProjectsMembers();
                             mainScreen.getWorkGroupsTableModel().updateModel();
@@ -327,6 +329,30 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
         int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
         
         manager.getProjectMemberDAO().deleteByUserIdAndProjectId(leaderId, projectId);
+    }
+    
+    private void addAllWorkGroupMembersToProjectMembers() throws DAOException {
+        String selectedProjectName = cbxProject.getSelectedItem().toString();
+        int selectedProjectId = manager.getProjectDAO().getProjectIdByProjectName(selectedProjectName);
+        int selectedRow = mainScreen.getWorkGroupsTable().getSelectedRow();
+        String previousProjectName = mainScreen.getWorkGroupsTable().getValueAt(selectedRow, 1).toString();
+        int previousProjectId = manager.getProjectDAO().getProjectIdByProjectName(previousProjectName);
+        
+        if (selectedProjectId != previousProjectId) {
+            int workGroupId = 
+                    Integer.parseInt(mainScreen.getWorkGroupsTable().getValueAt(selectedRow, 0).toString());
+            List<Integer> usersId = manager
+                    .getWorkGroupMemberDAO()
+                    .getMembersByWorkGroupId(workGroupId)
+                    .stream()
+                    .map(member -> member.getUserId())
+                    .collect(Collectors.toList());
+            for (int userId : usersId) {
+                manager
+                    .getProjectMemberDAO()
+                    .updateByUserIdAndProjectId(userId, previousProjectId, selectedProjectId);
+            }
+        }
     }
     
     private void addWorkGroupLeaderToWorkGroupMembers(String workGroupName) throws DAOException {

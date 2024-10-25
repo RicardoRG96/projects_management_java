@@ -22,7 +22,10 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
     final String DELETE_BY_PROJECT_ID = "DELETE FROM project_members WHERE project_id = ?";
     final String DELETE_BY_USER_ID = "DELETE FROM project_members WHERE user_id = ?";
     final String GET_BY_USER_ID = "SELECT * FROM project_members WHERE user_id = ?";
-    final String GET_BY_PROJECT_AND_USER_ID = "SELECT * FROM project_members WHERE project_id = ? AND user_id = ?";
+    final String GET_BY_PROJECT_AND_USER_ID = 
+            "SELECT * FROM project_members WHERE project_id = ? AND user_id = ?";
+    final String UPDATE_BY_USER_AND_PROJECT_ID = 
+            "UPDATE project_members SET project_id = ? WHERE user_id = ? AND project_id = ?";
     
     private Connection conn;
     
@@ -350,4 +353,30 @@ public class MySQLProjectMemeberDAO implements ProjectMemberDAO {
         }
         return projectMember;
     }
+    
+    @Override
+    public void updateByUserIdAndProjectId(int userId, int previousProjectId, int currentProjectId) 
+            throws DAOException {
+        PreparedStatement statement = null;
+        try {
+            statement = conn.prepareStatement(UPDATE_BY_USER_AND_PROJECT_ID);
+            statement.setInt(1, currentProjectId);
+            statement.setInt(2, userId);
+            statement.setInt(3, previousProjectId);
+            if (statement.executeUpdate() == 0) {
+                throw new DAOException("Posiblemente la información no fue actualizada");
+            }
+        } catch (SQLException ex) {
+            throw new DAOException("Error en SQL", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+        }
+    }
+    
 }
