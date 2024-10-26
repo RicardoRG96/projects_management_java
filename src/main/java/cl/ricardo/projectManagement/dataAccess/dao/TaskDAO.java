@@ -20,4 +20,6 @@ public interface TaskDAO extends DAO<Task, Integer> {
     @Override
     Task getElement(int id) throws DAOException;
     
+    List<Task> getUserTasks(int userId) throws DAOException;
+    
 }

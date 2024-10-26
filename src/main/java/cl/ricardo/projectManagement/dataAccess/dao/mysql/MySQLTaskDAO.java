@@ -21,6 +21,7 @@ public class MySQLTaskDAO implements TaskDAO {
     final String DELETE = "DELETE FROM tasks WHERE id = ?";
     final String GETALL = "SELECT * FROM tasks";
     final String GETONE = "SELECT * FROM tasks WHERE id = ?";
+    final String GET_BY_ASSIGNED_TO = "SELECT * FROM tasks WHERE assigned_to = ?";
     
     private Connection conn;
     
@@ -201,6 +202,39 @@ public class MySQLTaskDAO implements TaskDAO {
             }
         }
         return task;
+    }
+    
+    @Override
+    public List<Task> getUserTasks(int userId) throws DAOException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Task> userTasks = new ArrayList<>();
+        try {
+            statement = conn.prepareStatement(GET_BY_ASSIGNED_TO);
+            statement.setInt(1, userId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                userTasks.add(convert(resultSet));
+            }
+        } catch (SQLException ex) {
+            throw new DAOException("Error en SQL", ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error en SQL", ex);
+                }
+            }
+        }
+        return userTasks;
     }
     
 }

@@ -1205,8 +1205,9 @@ public class MainScreen extends javax.swing.JFrame {
     private void btnListAllUsersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnListAllUsersMouseClicked
         UsersList usersList;
         try {
-            usersList = new UsersList(manager, user);
+            usersList = new UsersList(manager, user, this);
             usersList.setVisible(true);
+            usersList.setLocationRelativeTo(null);
         } catch (DAOException ex) {
             System.out.println(ex.toString());
         }
