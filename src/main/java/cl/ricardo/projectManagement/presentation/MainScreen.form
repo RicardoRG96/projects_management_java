@@ -1416,11 +1416,11 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-                              <Component id="btnAddWorkGroup1" min="-2" pref="35" max="-2" attributes="0"/>
+                              <Component id="btnAddTask" min="-2" pref="35" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
-                              <Component id="btnEditWorkgroup1" min="-2" pref="35" max="-2" attributes="0"/>
+                              <Component id="btnEditTask" min="-2" pref="35" max="-2" attributes="0"/>
                               <EmptySpace pref="42" max="32767" attributes="0"/>
-                              <Component id="btnDeleteWorkGroup1" min="-2" pref="35" max="-2" attributes="0"/>
+                              <Component id="btnDeleteTask" min="-2" pref="35" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -1430,9 +1430,9 @@
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="btnEditWorkgroup1" alignment="1" min="-2" pref="35" max="-2" attributes="0"/>
-                                  <Component id="btnDeleteWorkGroup1" alignment="1" min="-2" pref="35" max="-2" attributes="0"/>
-                                  <Component id="btnAddWorkGroup1" alignment="1" min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Component id="btnEditTask" alignment="1" min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Component id="btnDeleteTask" alignment="1" min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Component id="btnAddTask" alignment="1" min="-2" pref="35" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -1440,7 +1440,7 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JButton" name="btnAddWorkGroup1">
+                    <Component class="javax.swing.JButton" name="btnAddTask">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ed" green="ed" red="f5" type="rgb"/>
@@ -1461,11 +1461,11 @@
                         <Property name="verticalTextPosition" type="int" value="3"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnAddWorkGroup1MouseClicked"/>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddWorkGroup1ActionPerformed"/>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnAddTaskMouseClicked"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddTaskActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="btnEditWorkgroup1">
+                    <Component class="javax.swing.JButton" name="btnEditTask">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ed" green="ed" red="f5" type="rgb"/>
@@ -1483,10 +1483,10 @@
                         <Property name="verticalTextPosition" type="int" value="3"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnEditWorkgroup1MouseClicked"/>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnEditTaskMouseClicked"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="btnDeleteWorkGroup1">
+                    <Component class="javax.swing.JButton" name="btnDeleteTask">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ed" green="ed" red="f5" type="rgb"/>
@@ -1504,7 +1504,7 @@
                         <Property name="verticalTextPosition" type="int" value="3"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnDeleteWorkGroup1MouseClicked"/>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnDeleteTaskMouseClicked"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -1647,6 +1647,11 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="txtTasksTableElementsCount">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Roboto" size="12" style="0"/>
+                    </Property>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
