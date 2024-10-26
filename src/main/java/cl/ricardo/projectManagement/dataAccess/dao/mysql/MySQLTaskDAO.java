@@ -70,11 +70,12 @@ public class MySQLTaskDAO implements TaskDAO {
             statement.setString(6, task.getPriority());
             statement.setDate(7, Date.valueOf(task.getDueDate()));
             statement.setInt(8, task.getAssignedTo());
+            statement.setInt(9, task.getId());
             if (statement.executeUpdate() == 0) {
                 throw new DAOException("Posiblemente la información no fue actualizada");
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error en SQL", ex);
+            throw new DAOException("Error en SQL task update()", ex);
         } finally {
             if (statement != null) {
                 try {
@@ -150,15 +151,18 @@ public class MySQLTaskDAO implements TaskDAO {
         Task task = new Task(title, description, status, priority, dueDate);
         int taskId = resultSet.getInt("id");
         int projectId = resultSet.getInt("project_id");
+        boolean wasProjectIdNull = resultSet.wasNull();
         int workGroupId = resultSet.getInt("workgroup_id");
+        boolean wasWorkGroupIdNull = resultSet.wasNull();
         int assignedTo = resultSet.getInt("assigned_to");
+        boolean wasAssignedToNull = resultSet.wasNull();
         String createdAt = resultSet.getString("created_at");
         String updatedAt = resultSet.getString("updated_at");
         
         task.setId(taskId);
-        task.setProjectId(projectId);
-        task.setWorkGroupId(workGroupId);
-        task.setAssignedTo(assignedTo);
+        task.setProjectId(wasProjectIdNull ? null : projectId);
+        task.setWorkGroupId(wasWorkGroupIdNull ? null : workGroupId);
+        task.setAssignedTo(wasAssignedToNull ? null : assignedTo);
         task.setCreatedAt(createdAt);
         task.setUpdatedAt(updatedAt);
         return task;
@@ -176,7 +180,7 @@ public class MySQLTaskDAO implements TaskDAO {
             if (resultSet.next()) {
                 task = convert(resultSet);
             } else {
-                throw new DAOException("No se ha encontrado el registro");
+                throw new DAOException("No se ha encontrado el registro task getElement");
             }
         } catch (SQLException ex) {
             throw new DAOException("Error en SQL", ex);

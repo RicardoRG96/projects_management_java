@@ -63,21 +63,21 @@ public class TasksTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Task asked = data.get(rowIndex);
-        int projectId = asked.getProjectId();
-        int workGroupId = asked.getWorkGroupId();
-        int userId = asked.getAssignedTo();
         try {
+            Task asked = data.get(rowIndex);
+            Integer projectId = asked.getProjectId();
+            Integer workGroupId = asked.getWorkGroupId();
+            Integer userId = asked.getAssignedTo();
             return switch(columnIndex) {
                 case 0 -> asked.getId();
-                case 1 -> projects.getElement(projectId).getName();
-                case 2 -> workGroups.getElement(workGroupId).getName();
+                case 1 -> projectId == null ? "No asignado" : projects.getElement(projectId).getName();
+                case 2 -> workGroupId == null ? "No asignado" : workGroups.getElement(workGroupId).getName();
                 case 3 -> asked.getTitle();
                 case 4 -> asked.getDescription();
                 case 5 -> asked.getStatus();
                 case 6 -> asked.getPriority();
                 case 7 -> asked.getDueDate().toString();
-                case 8 -> users.getElement(userId).getUserName();
+                case 8 -> userId == null ? "No asignado" : users.getElement(userId).getUserName();
                 case 9 -> asked.getCreatedAt();
                 case 10 -> asked.getUpdatedAt();
                 default -> "";

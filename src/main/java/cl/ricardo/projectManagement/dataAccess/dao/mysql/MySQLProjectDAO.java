@@ -153,7 +153,7 @@ public class MySQLProjectDAO implements ProjectDAO {
             if (resultSet.next()) {
                 project = convert(resultSet);
             } else {
-                throw new DAOException("No se ha encontrado el registro");
+                throw new DAOException("No se ha encontrado el registro project getElement");
             }
         } catch (SQLException ex) {
             throw new DAOException("Error en SQL", ex);
@@ -188,7 +188,7 @@ public class MySQLProjectDAO implements ProjectDAO {
             if (resultSet.next()) {
                 projectId = resultSet.getInt("id");
             } else {
-                throw new DAOException("No se ha encontrado el registro");
+                throw new DAOException("No se ha encontrado el registro project getProjectIdByProjectName");
             }
         } catch (SQLException ex) {
             throw new DAOException("Error en SQL", ex);

@@ -178,7 +178,7 @@ public class MySQLWorkGroupDAO implements WorkGroupDAO {
             if (resultSet.next()) {
                 workGroup = convert(resultSet);
             } else {
-                throw new DAOException("No se ha encontrado el registro");
+                throw new DAOException("No se ha encontrado el registro workgroup getElement");
             }
         } catch (SQLException ex) {
             throw new DAOException("Error en SQL", ex);
@@ -246,7 +246,7 @@ public class MySQLWorkGroupDAO implements WorkGroupDAO {
             if (resultSet.next()) {
                 workGroupId = resultSet.getInt("id");
             } else {
-                throw new DAOException("No se ha encontrado el registro");
+                throw new DAOException("No se ha encontrado el registro workgroup getWorkGroupIdByName");
             }
         } catch (SQLException ex) {
             throw new DAOException("Error en SQL", ex);

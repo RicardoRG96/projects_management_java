@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
@@ -69,14 +70,18 @@ public class TasksDetailsPanel extends javax.swing.JFrame {
             jDateChooserDueDate.setDate(new Date());
             cbxAssignedTo.setSelectedItem(null);
         } else if (this.action.equals("MODIFY")) {
-            Object projectName = (Object) manager
-                    .getProjectDAO()
-                    .getElement(task.getProjectId())
-                    .getName();
-            Object workGroupName = (Object) manager
-                    .getWorkGroupDAO()
-                    .getElement(task.getWorkGroupId())
-                    .getName();
+            Object projectName = task.getProjectId() == null 
+                    ? "No asignado" 
+                    : (Object) manager
+                        .getProjectDAO()
+                        .getElement(task.getProjectId())
+                        .getName();
+            Object workGroupName = task.getWorkGroupId() == null 
+                    ? "No asignado" 
+                    : (Object) manager
+                        .getWorkGroupDAO()
+                        .getElement(task.getWorkGroupId())
+                        .getName();
             String taskName = task.getTitle();
             String taskDescription = task.getDescription();
             Object taskStatus = (Object) task.getStatus();
@@ -84,10 +89,12 @@ public class TasksDetailsPanel extends javax.swing.JFrame {
             ZoneId defaultZoneId = ZoneId.systemDefault();
             LocalDate taskDueDate = task.getDueDate();
             Date formatedDueDate = Date.from(taskDueDate.atStartOfDay(defaultZoneId).toInstant());
-            Object assignedTo = (Object) manager
-                    .getUserDAO()
-                    .getElement(task.getAssignedTo())
-                    .getUserName();
+            Object assignedTo = task.getAssignedTo() == null 
+                    ? "No asignado" 
+                    : (Object) manager
+                        .getUserDAO()
+                        .getElement(task.getAssignedTo())
+                        .getUserName();
             
             cbxProject.setSelectedItem(projectName);
             cbxTeam.setSelectedItem(workGroupName);
@@ -102,6 +109,7 @@ public class TasksDetailsPanel extends javax.swing.JFrame {
     
     private void listAllProjects() throws DAOException {
         List<Project> projects = manager.getProjectDAO().getAll();
+        cbxProject.addItem("No asignado");
         projects
                 .stream()
                 .forEach(project -> cbxProject.addItem(project.getName()));
@@ -109,6 +117,7 @@ public class TasksDetailsPanel extends javax.swing.JFrame {
     
     private void listAllWorkGroups() throws DAOException {
         List<WorkGroup> workGroups = manager.getWorkGroupDAO().getAll();
+        cbxTeam.addItem("No asignado");
         workGroups
                 .stream()
                 .forEach(workGroup -> cbxTeam.addItem(workGroup.getName()));
@@ -116,6 +125,7 @@ public class TasksDetailsPanel extends javax.swing.JFrame {
     
     private void listAllUsers() throws DAOException {
         List<User> users = manager.getUserDAO().getAll();
+        cbxAssignedTo.addItem("No asignado");
         users
             .stream()
             .forEach(user -> cbxAssignedTo.addItem(user.getUserName()));
@@ -361,6 +371,8 @@ public class TasksDetailsPanel extends javax.swing.JFrame {
     }
     
     private void saveData() throws DAOException {
+        int selectedRow = mainScreen.getTasksTable().getSelectedRow();
+        int taskId = Integer.parseInt(mainScreen.getTasksTable().getValueAt(selectedRow, 0).toString());
         String projectName = cbxProject.getSelectedItem().toString();
         int projectId = manager.getProjectDAO().getProjectIdByProjectName(projectName);
         String workGroupName = cbxTeam.getSelectedItem().toString();
@@ -377,6 +389,7 @@ public class TasksDetailsPanel extends javax.swing.JFrame {
         String userName = cbxAssignedTo.getSelectedItem().toString();
         int userId = manager.getUserDAO().getUserIdByUserName(userName);
         
+        task.setId(taskId);
         task.setProjectId(projectId);
         task.setWorkGroupId(workGroupId);
         task.setTitle(taskTitle);

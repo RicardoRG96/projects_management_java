@@ -309,6 +309,11 @@ public class MainScreen extends javax.swing.JFrame {
         JLabel5.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
         JLabel5.setForeground(new java.awt.Color(245, 237, 237));
         JLabel5.setText("Tareas");
+        JLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JLabel5MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout tasksTabLayout = new javax.swing.GroupLayout(tasksTab);
         tasksTab.setLayout(tasksTabLayout);
@@ -456,6 +461,11 @@ public class MainScreen extends javax.swing.JFrame {
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 493));
 
         jTabbedPane1.setBackground(new java.awt.Color(245, 237, 237));
+        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane1MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -1367,17 +1377,8 @@ public class MainScreen extends javax.swing.JFrame {
 
     private void setDataFromSelectedWorkGroupsTableItem() throws DAOException {
         int selectedRow = workGroupsTable.getSelectedRow();
-        int projectId = manager
-                .getProjectDAO()
-                .getProjectIdByProjectName(String.valueOf(workGroupsTable.getValueAt(selectedRow, 1)));
-        int leaderId = manager
-                .getUserDAO()
-                .getUserIdByUserName(String.valueOf(workGroupsTable.getValueAt(selectedRow, 3)));
-        workGroup.setId((Integer)workGroupsTable.getValueAt(selectedRow, 0));
-        workGroup.setProjectId(projectId);
-        workGroup.setName(String.valueOf(workGroupsTable.getValueAt(selectedRow, 2)));
-        workGroup.setLeaderId(leaderId);
-        workGroup.setCreatedAt(String.valueOf(workGroupsTable.getValueAt(selectedRow, 4)));
+        int workGroupId = Integer.parseInt(workGroupsTable.getValueAt(selectedRow, 0).toString());
+        workGroup = manager.getWorkGroupDAO().getElement(workGroupId);
     }
     
     private void btnDeleteWorkGroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteWorkGroupMouseClicked
@@ -1421,6 +1422,12 @@ public class MainScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDeleteWorkGroupMouseClicked
 
+    private void deleteWorkGroup() throws DAOException {
+        int selectedRow = workGroupsTable.getSelectedRow();
+        int workGroupId = (int) workGroupsTable.getValueAt(selectedRow, 0);
+        manager.getWorkGroupDAO().delete(workGroupId);
+    }
+    
     private void deleteWorkGroupMembersInProjectMembers() throws DAOException {
         int selectedRow = workGroupsTable.getSelectedRow();
         String projectName = workGroupsTable.getValueAt(selectedRow, 1).toString();
@@ -1514,13 +1521,36 @@ public class MainScreen extends javax.swing.JFrame {
     }
     
     private void btnDeleteTaskMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteTaskMouseClicked
-        // TODO add your handling code here:
+        if (tasksTable.getSelectedRow() >= 0) {
+            try {
+                int question = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar?");
+                if (question == 0) {
+                    deleteTask();
+                    JOptionPane.showMessageDialog(null, "Eliminado con éxito");
+                    tasksTableModel.updateModel();
+                    tasksTableModel.fireTableDataChanged();
+                    loadTablesElementsCount();
+                }
+            } catch (DAOException ex) {
+                System.out.println(ex.toString());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una fila");
+        }
     }//GEN-LAST:event_btnDeleteTaskMouseClicked
-   
-    private void deleteWorkGroup() throws DAOException {
-        int selectedRow = workGroupsTable.getSelectedRow();
-        int workGroupId = (int) workGroupsTable.getValueAt(selectedRow, 0);
-        manager.getWorkGroupDAO().delete(workGroupId);
+
+    private void JLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JLabel5MouseClicked
+        jTabbedPane1.setSelectedIndex(4);
+    }//GEN-LAST:event_JLabel5MouseClicked
+
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
+    
+    private void deleteTask() throws DAOException {
+        int selectedRow = tasksTable.getSelectedRow();
+        int taskId = Integer.parseInt(tasksTable.getValueAt(selectedRow, 0).toString());
+        manager.getTaskDAO().delete(taskId);
     }
     
     private void handleClosing() {

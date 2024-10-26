@@ -52,11 +52,15 @@ public class WorkGroupDetailsPanel extends javax.swing.JFrame {
                 txtWorkGroupName.setText("");
                 cbxLeader.setSelectedItem(null);
             } else if (this.action.equals("MODIFY")) {
-                ProjectDAO projectDao = manager.getProjectDAO();
-                UserDAO userDao = manager.getUserDAO();
-                String projectName = projectDao.getElement(workGroup.getProjectId()).getName();
+                String projectName = manager
+                        .getProjectDAO()
+                        .getElement(workGroup.getProjectId())
+                        .getName();
                 String workGroupName = workGroup.getName();
-                String leaderName = userDao.getElement(workGroup.getLeaderId()).getUserName();
+                String leaderName = manager
+                        .getUserDAO()
+                        .getElement(workGroup.getLeaderId())
+                        .getUserName();
 
                 cbxProject.setSelectedItem(projectName);
                 txtWorkGroupName.setText(workGroupName);

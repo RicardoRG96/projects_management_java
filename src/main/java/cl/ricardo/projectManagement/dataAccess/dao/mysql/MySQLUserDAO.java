@@ -155,7 +155,7 @@ public class MySQLUserDAO implements UserDAO {
             if (resultSet.next()) {
                 user = convert(resultSet);
             } else {
-                throw new DAOException("No se ha encontrado el registro");
+                throw new DAOException("No se ha encontrado el registro user getElement");
             }
         } catch (SQLException ex) {
             throw new DAOException("Error en SQL", ex);
@@ -226,7 +226,7 @@ public class MySQLUserDAO implements UserDAO {
             if (resultSet.next()) {
                 userId = resultSet.getInt("id");
             } else {
-                throw new DAOException("No se ha encontrado el registro");
+                throw new DAOException("No se ha encontrado el registro user getUserIdByUserName");
             }
         } catch (SQLException ex) {
             throw new DAOException("Error en SQL", ex);
